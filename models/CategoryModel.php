@@ -30,8 +30,7 @@ class CategoryModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $row);
         }
         return $data;
@@ -78,5 +77,28 @@ class CategoryModel extends Model
             "status" => "success",
             "message" => "Category has been updated"
         );
+    }
+
+    public function search_by_category($value)
+    {
+        $sql = "SELECT * FROM movie_categories INNER JOIN categories ON movie_categories.category_id = categories.id WHERE categories.name LIKE '%" . $value . "%'";
+        $result = mysqli_query($this->connection, $sql);
+
+        $data = array();
+        while ($category = mysqli_fetch_object($result)) {
+            $sql = "SELECT * FROM movies WHERE id = '" . $category->movie_id . "'";
+            $result_movie = mysqli_query($this->connection, $sql);
+            while ($movie = mysqli_fetch_object($result_movie)) {
+                $sql = "SELECT * FROM movie_thumbnails WHERE movie_id = '" . $movie->id . "' LIMIT 1";
+                $result_thumbnails = mysqli_query($this->connection, $sql);
+                if (mysqli_num_rows($result_thumbnails) > 0) {
+                    $movie->picture = mysqli_fetch_object($result_thumbnails)->file_path;
+                } else {
+                    $movie->picture = "public/img/user-placeholder.png";
+                }
+                array_push($data, $movie);
+            }
+        }
+        return $data;
     }
 }

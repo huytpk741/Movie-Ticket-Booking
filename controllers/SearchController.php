@@ -27,6 +27,23 @@ class SearchController extends Controller
         require_once VIEW . "layout/footer.php";
     }
 
+    public function Categories($value)
+    {
+        $data = $this->load_model("CategoryModel")->search_by_category($value);
+        foreach ($data as $d)
+        {
+            $d->date = date("d", strtotime($d->release_date));
+            $d->month = date("M", strtotime($d->release_date));
+            $d->year = date("Y", strtotime($d->release_date));
+
+            $d->detail = URL . "movie/detail/" . $d->id;
+        }
+
+        require_once VIEW . "layout/header.php";
+        require_once VIEW . 'search.php';
+        require_once VIEW . "layout/footer.php";
+    }
+
     public function Celebrities($value)
     {
         $data = $this->load_model("CelebrityModel")->search($value);

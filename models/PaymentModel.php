@@ -41,12 +41,17 @@ class PaymentModel extends Model
         $sql = "SELECT * FROM payments WHERE id = $id";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) == 0)
-        {
+        if (mysqli_num_rows($result) == 0) {
             return null;
         }
 
         return mysqli_fetch_object($result);
+    }
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM payments WHERE id = '" . $id . "'";
+        mysqli_query($this->connection, $sql) or die(mysqli_error($this->connection));
     }
 
     public function get_by_order($order_id)
@@ -54,36 +59,11 @@ class PaymentModel extends Model
         $sql = "SELECT * FROM payments WHERE order_id = $order_id";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) == 0)
-        {
+        if (mysqli_num_rows($result) == 0) {
             return null;
         }
 
         return mysqli_fetch_object($result);
-    }
-
-    public function get_by_order_detail($order_id)
-    {
-        $sql = "SELECT * FROM payments WHERE order_id = '" . $order_id . "'";
-        $result = mysqli_query($this->connection, $sql);
-        
-        if (mysqli_num_rows($result) == 0)
-        {
-            die("Order does not exists.");
-        }
-
-        $payment = mysqli_fetch_object($result);
-
-        $sql = "SELECT * FROM orders WHERE id = '" .  $payment->order_id . "'";
-        $order_result = mysqli_query($this->connection, $sql);
-        $order = mysqli_fetch_object($order_result);
-
-        $data = [
-            "order" => $order,
-            "payment" => $payment
-        ];
-
-        return $data;
     }
 
     public function get_order_by_payment($payment_id)
@@ -92,8 +72,7 @@ class PaymentModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $row);
         }
         return $data;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PaymentController
  */
@@ -14,9 +15,6 @@ class PaymentController extends Controller
         Security::csrf_token();
         $paymentId = $_POST["payment_id"];
         $order_detail = $this->load_model("OrderModel")->get_detail($order_id);
-        $payment_detail = $this->load_model("PaymentModel")->get_by_order_detail($order_detail["order"]->id);
-
-        // $this->load_model("PaymentModel")->paid_payment($payment_detail["payment"]->id, $token, $type);
 
         if ($this->user == null) {
             echo false;
@@ -30,10 +28,7 @@ class PaymentController extends Controller
 
         $has_coupon_code_applied = ($order_detail["coupon"] != null);
 
-        // $movie = $this->load_model("OrderModel")->get_movie_by_order($order_detail["order"]->id);
         $movie = $order_detail["movie"];
-
-
 
         $email = file_get_contents("views/emails/ticket-booked.php");
         $seats = "";
@@ -117,9 +112,9 @@ class PaymentController extends Controller
         $this->send_mail($_SESSION["user"]->email, "Cinema Ticket Booking", $email);
 
         $_SESSION["success"] = "Your ticket(s) has been booked. Kindly reach 30 mint before movie starts. Please check your email.";
-        $is_paid_payment = $this->load_model("PaymentModel")->is_confirm_payment($payment_detail["payment"]->id, $token);
+        $is_paid_payment = $this->load_model("PaymentModel")->is_confirm_payment($order_detail["payment"]->id, $token);
         if ($is_paid_payment) {
-            $this->load_model("PaymentModel")->paid_payment($payment_detail["payment"]->id, $token, $type, $paymentId);
+            $this->load_model("PaymentModel")->paid_payment($order_detail["payment"]->id, $token, $type, $paymentId);
 
             $_SESSION["success"] = "Your ticket(s) has been booked. Kindly reach 30 mint before movie starts.";
             header("Location: " . URL . "movie/all");
@@ -174,14 +169,18 @@ class PaymentController extends Controller
         }
 
         $order_detail = $this->load_model("OrderModel")->get_detail($id);
-        $payment_detail = $this->load_model("PaymentModel")->get_by_order_detail($order_detail["order"]->id);
 
-        $is_payment = $this->load_model("PaymentModel")->is_payment($payment_detail["payment"]->id);
+        $is_payment = $this->load_model("PaymentModel")->is_payment($order_detail["payment"]->id);
+
+        $created_date = $order_detail["order"]->created_at;
+        $createdDate = strtotime($created_date);
+        $infivem = $createdDate + (60 * 1);
+        $formatDate = date("Y-m-d H:i:s", $infivem);
 
         if ($is_payment) {
             show_404();
         } else {
-            
+
             $movie = $this->load_model("MovieModel")->get_detail($order_detail["movie"]->id);
 
             if ($order_detail["order"]->user_id != $this->user->id) {
@@ -223,6 +222,18 @@ class PaymentController extends Controller
             require_once VIEW . 'payments/order.php';
             require_once VIEW . "layout/footer.php";
         }
+    }
+
+    public function expired()
+    {
+        $order_id = $_POST["order_id"];
+        $order_detail = $this->load_model("OrderModel")->get_detail($order_id);
+        $this->load_model("PaymentModel")->delete($order_detail['payment']->id);
+        foreach ($order_detail["tickets"] as $ticket) {
+            $this->load_model("TicketModel")->delete_ticket($ticket['ticket']->id);
+        }
+        $this->load_model("OrderModel")->delete_ticket($order_detail['order']->id);
+        $_SESSION["error"] = "You did not pay your ticket in 5 minutes. Please try again later!";
     }
 
     public function confirm_order($payment_id, $token)

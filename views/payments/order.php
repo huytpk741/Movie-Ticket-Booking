@@ -31,6 +31,7 @@
             <div class="row flexbox-center">
                 <div class="col-md-12 text-center">
                     Order # <?php echo $order_detail["order"]->id; ?>
+                    <p id="countdown"></p>
                 </div>
             </div>
 
@@ -173,7 +174,61 @@
 
 <!-- include Stripe library -->
 <script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Set the date we're counting down to
+    var countDownDate = new Date("<?php echo $formatDate; ?>").getTime();
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+        // Get today's date and time
+        var now = new Date().getTime();
+        // Find the distance between now and the count down date
+        var distance = countDownDate - now;
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        // Output the result in an element with id="demo"
+        document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s ";
+        // If the count down is over, write some text 
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("countdown").innerHTML = "EXPIRED";
+            var movie = "<?php echo $order_detail["movie"]->id; ?>";
 
+            var ajax = new XMLHttpRequest();
+            ajax.open("POST", document.getElementById("base-url").value + "payment/expired", true);
+
+            ajax.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        console.log(this.responseText);
+
+                        if (this.responseText > 0) {
+                            // document.getElementById("grant-total-text").innerHTML = "Total: $" + this.responseText;
+
+                            // swal("Coupon code accepted", "Please wait while we re-calculate your price." , "success");
+                            // window.location.reload();
+                        } else {
+                            // swal("Coupon code failed", "Sorry, this coupon code is not correct." , "error");
+                        }
+                    }
+
+                    if (this.status == 500) {
+                        console.log(this.responseText);
+                    }
+                }
+            };
+
+            var formData = new FormData();
+            formData.append("order_id", JSON.parse(document.getElementById("hidden-order").value).id);
+            ajax.send(formData);
+
+            /* redirect the user to home page */
+            window.location.href = document.getElementById("base-url").value + "movie/detail/" + movie;
+        }
+    }, 500);
+</script>
 <script>
     /* global variables */
     var stripe = null;

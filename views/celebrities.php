@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcrumb-area-content">
-                    <h1>Celebrities Page</h1>
+                    <h1>Casting Page</h1>
                 </div>
             </div>
         </div>
