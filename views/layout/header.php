@@ -6,7 +6,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Moviepoint - <?= $this->title; ?></title>
+        <title>Cinema - <?= $this->title; ?></title>
         <!-- Favicon Icon -->
         <link rel="icon" type="image/png" href="<?= IMG; ?>favcion.png" />
 
@@ -81,7 +81,7 @@
                         </form>
                         <ul>
                             <?php if (isset($_SESSION["user"])) { ?>
-                                <li><a href="javascript:void(0);">Welcome <?= $this->user->name; ?>!</a></li>
+                                <li><a href="javascript:void(0);"><div class="change-password">Welcome <?= $this->user->name; ?>!</div></a></li>
                                 <li><a href="<?= URL; ?>user/logout">Logout</a></li>
                             <?php } else { ?>
                                 <li><a href="javascript:void(0);">Welcome Guest!</a></li>
@@ -147,6 +147,27 @@
                     </div>
 
                     <input type="submit" class="theme-btn" value="SEND RECOVERY LINK" style="background: #eb315a;">
+                </form>
+                
+            </div>
+        </div>
+
+        <div class="change-password-area">
+            <div class="login-box">
+                <a href="#"><i class="icofont icofont-close"></i></a>
+                <h2>Change password</h2>
+                <form action="<?= URL . 'user/change_password' ?>" method="POST">
+
+                    <?= Security::csrf_token(); ?>
+
+                    <h6>CURRENT PASSWORD</h6>
+                    <input value="<?= isset($input['current_password']) ? $input['current_password'] : ''; ?>" type="password" name="current_password" required="" />
+                    <h6>CURRENT PASSWORD</h6>
+                    <input value="<?= isset($input['new_password']) ? $input['new_password'] : ''; ?>" type="password" name="new_password" required="" />
+                    <h6>CURRENT PASSWORD</h6>
+                    <input value="<?= isset($input['confirm_password']) ? $input['confirm_password'] : ''; ?>" type="password" name="confirm_password" required="" />
+
+                    <input type="submit" class="theme-btn" value="CHANGE PASSWORD" style="background: #eb315a;">
                 </form>
                 
             </div>

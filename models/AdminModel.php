@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AdminModel
  */
@@ -30,14 +31,12 @@ class AdminModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             // get movie
             $sql_movie = "SELECT * FROM `movies` WHERE `id` = '" . $row->movie_id . "'";
             $result_movie = mysqli_query($this->connection, $sql_movie);
 
-            if (mysqli_num_rows($result_movie) > 0)
-            {
+            if (mysqli_num_rows($result_movie) > 0) {
                 $movie = mysqli_fetch_object($result_movie);
                 $row->movie = $movie;
                 array_push($data, $row);
@@ -64,8 +63,7 @@ class AdminModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $row);
         }
         return $data;
@@ -78,15 +76,13 @@ class AdminModel extends Model
         $sql = "SELECT * FROM `" . $this->table . "` WHERE `id` = '" . $admin_id . "'";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) > 0)
-        {
+        if (mysqli_num_rows($result) > 0) {
             $admin_object = mysqli_fetch_object($result);
 
             $sql = "SELECT * FROM `users` WHERE `email` = '" . $admin_object->email . "'";
             $result = mysqli_query($this->connection, $sql);
 
-            if (mysqli_num_rows($result) > 0)
-            {
+            if (mysqli_num_rows($result) > 0) {
                 return mysqli_fetch_object($result);
             }
         }
@@ -103,20 +99,14 @@ class AdminModel extends Model
         $sql = "SELECT * FROM `" . $this->table . "` WHERE `email` = '$email'";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) > 0)
-        {
+        if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_object($result);
-            if (password_verify($password, $row->password))
-            {
+            if (password_verify($password, $row->password)) {
                 $response["msg"] = $row;
-            }
-            else
-            {
+            } else {
                 $response["error"] = "Password does not match";
             }
-        }
-        else
-        {
+        } else {
             $response["error"] = "Admin does not exists";
         }
 
@@ -141,28 +131,29 @@ class AdminModel extends Model
         $confirm_password = $_POST["confirm_password"];
 
         $admin = $this->get_admin($_SESSION["admin"]);
-        if (password_verify($current_password, $admin->password))
-        {
-            if ($new_password == $confirm_password)
-            {
-                $sql = "UPDATE `" . $this->table . "` SET password = '" . password_hash($new_password, PASSWORD_DEFAULT) . "' WHERE `id` = '" . $_SESSION["admin"] . "'";
-                mysqli_query($this->connection, $sql);
+        if (password_verify($current_password, $admin->password)) {
+            if ($new_password == $confirm_password) {
+                if ($new_password != $current_password) {
+                    $sql = "UPDATE `" . $this->table . "` SET password = '" . password_hash($new_password, PASSWORD_DEFAULT) . "' WHERE `id` = '" . $_SESSION["admin"] . "'";
+                    mysqli_query($this->connection, $sql);
 
-                return array(
-                    "status" => "success",
-                    "message" => "Password has been changed."
-                );
-            }
-            else
-            {
+                    return array(
+                        "status" => "success",
+                        "message" => "Password has been changed."
+                    );
+                } else {
+                    return array(
+                        "status" => "error",
+                        "message" => "New password must be different from old password."
+                    );
+                }
+            } else {
                 return array(
                     "status" => "error",
                     "message" => "Password does not match."
                 );
             }
-        }
-        else
-        {
+        } else {
             return array(
                 "status" => "error",
                 "message" => "Current password not correct."
@@ -177,19 +168,15 @@ class AdminModel extends Model
 
         $admin = $this->get_admin($_SESSION["admin"]);
 
-        if ($_FILES["picture"]["error"] == 0)
-        {
+        if ($_FILES["picture"]["error"] == 0) {
             // delete old image, upload new
-            if (file_exists($admin->picture))
-            {
+            if (file_exists($admin->picture)) {
                 unlink($admin->picture);
             }
 
             $picture = "uploads/profile_images/" . time() . "-" . $_FILES["picture"]["name"];
             move_uploaded_file($_FILES["picture"]["tmp_name"], $picture);
-        }
-        else
-        {
+        } else {
             $picture = $admin->picture;
         }
 
@@ -201,7 +188,7 @@ class AdminModel extends Model
             "message" => "Profile has been updated"
         );
     }
-    
+
     public function verify_user($id)
     {
         $sql = "UPDATE `users` SET verified_at=NOW() WHERE id = '" . $id . "'";
@@ -211,8 +198,7 @@ class AdminModel extends Model
     public function remove_photo()
     {
         $admin = $this->get_admin($_SESSION["admin"]);
-        if (file_exists($admin->picture))
-        {
+        if (file_exists($admin->picture)) {
             unlink($admin->picture);
         }
 

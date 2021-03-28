@@ -36,12 +36,14 @@
 		$('.login-area').show();
         $('.signup-area').hide();
         $('.forgot-password-area').hide();
+		$('.change-password-area').hide();
 		return false;
 	});
 	$('.login-box > a').on('click', function () {
 		$('.login-area').hide();
         $('.signup-area').hide();
         $('.forgot-password-area').hide();
+		$('.change-password-area').hide();
 		return false;
 	});
 
@@ -49,12 +51,14 @@
         $('.login-area').hide();
         $('.signup-area').show();
         $('.forgot-password-area').hide();
+		$('.change-password-area').hide();
         return false;
     });
     $('.signup-signup > a').on('click', function () {
         $('.login-area').hide();
         $('.signup-area').hide();
         $('.forgot-password-area').hide();
+		$('.change-password-area').hide();
         return false;
     });
 
@@ -62,12 +66,29 @@
         $('.login-area').hide();
         $('.signup-area').hide();
         $('.forgot-password-area').show();
+		$('.change-password-area').hide();
         return false;
     });
     $('.forgot-password-area > a').on('click', function () {
         $('.login-area').hide();
         $('.signup-area').hide();
         $('.forgot-password-area').hide();
+		$('.change-password-area').hide();
+        return false;
+    });
+
+	$('.change-password').on('click', function () {
+        $('.login-area').hide();
+        $('.signup-area').hide();
+        $('.forgot-password-area').hide();
+		$('.change-password-area').show();
+        return false;
+    });
+    $('.change-password-area > a').on('click', function () {
+        $('.login-area').hide();
+        $('.signup-area').hide();
+        $('.forgot-password-area').hide();
+		$('.change-password-area').hide();
         return false;
     });
 	

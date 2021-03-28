@@ -1119,7 +1119,8 @@ hr {
 -----------------------------------*/
 .login-area,
 .signup-area,
-.forgot-password-area {
+.forgot-password-area,
+.change-password-area {
     position: absolute;
     top: 0;
     left: 0;
