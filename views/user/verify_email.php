@@ -42,7 +42,7 @@
                     <input type="hidden" name="email" id="email" placeholder="Enter Email" autocomplete="off" value="<?= $email; ?>" required>
                     <input style="margin-bottom: 10px;" type="text" name="verification_code" placeholder="Enter Verification Code" autocomplete="off" required>
                     
-                    <button type="submit" style="margin-bottom: 50px; width: 100%;">Verify</button>
+                    <button type="submit" style="background-color: #ff7600; margin-bottom: 50px; width: 100%;">Verify</button>
                 </form>
 
             </div>

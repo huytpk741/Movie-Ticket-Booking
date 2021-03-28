@@ -125,4 +125,10 @@ class OrderModel extends Model
         return mysqli_fetch_object($result);
     }
 
+    public function delete($id)
+    {
+        $sql = "DELETE FROM orders WHERE id = '" . $id . "'";
+        mysqli_query($this->connection, $sql) or die(mysqli_error($this->connection));
+    }
+
 }

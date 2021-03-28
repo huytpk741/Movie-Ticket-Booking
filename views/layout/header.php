@@ -74,7 +74,8 @@
                         <form action="<?= URL . 'search'; ?>" onsubmit="return doSearch(this);" method="GET">
                             <select id="search-type" name="search_type">
                                 <option value="Movies">Movies</option>
-                                <option value="Celebrities">Celebrities</option>
+                                <option value="Celebrities">Cast</option>
+                                <option value="Categories">Categories</option>
                             </select>
                             <input type="text" name="search_value" />
                             <button type="submit"><i class="icofont icofont-search"></i></button>
@@ -95,7 +96,7 @@
                             <ul id="primary-menu">
                                 <li><a class="<?= empty($_SERVER['QUERY_STRING']) ? 'active' : ''; ?>" href="<?= URL; ?>">Home</a></li>
                                 <li><a class="<?= stripos($_SERVER['QUERY_STRING'], 'movie/all') || stripos($_SERVER['QUERY_STRING'], 'movie/detail') ? 'active' : ''; ?>" href="<?= URL; ?>movie/all">Movies</a></li>
-                                <li><a class="<?= stripos($_SERVER['QUERY_STRING'], 'celebrity') ? 'active' : ''; ?>" href="<?= URL . 'celebrity'; ?>">CelebritiesList</a></li>
+                                <li><a class="<?= stripos($_SERVER['QUERY_STRING'], 'celebrity') ? 'active' : ''; ?>" href="<?= URL . 'celebrity'; ?>">Cast</a></li>
                                 <?php if (stripos($_SERVER["REQUEST_URI"], "movie/detail")): ?>
                                     <li><a class="theme-btn show-tickets" href="#"><i class="icofont icofont-ticket"></i> Tickets</a></li>
                                 <?php endif; ?>

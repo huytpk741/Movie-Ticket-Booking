@@ -28,7 +28,7 @@
         <div class="row flexbox-center">
             <div class="col-lg-6 text-center text-lg-left">
                 <div class="section-title">
-                    <h1><i class="icofont icofont-movie"></i> Spotlight of Months</h1>
+                    <h1><i class="icofont icofont-video"></i> Spotlight of Months</h1>
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">

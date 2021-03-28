@@ -5,7 +5,7 @@
  */
 class MovieModel extends Model
 {
-    
+
     function __construct()
     {
         parent::__construct();
@@ -29,10 +29,8 @@ class MovieModel extends Model
         $thumbnail = $_FILES["thumbnail"];
         $trailers = $_FILES["trailers"];
 
-        for ($a = 0; $a < count($thumbnail["name"]); $a++)
-        {
-            if ($thumbnail["error"][$a] != 0)
-            {
+        for ($a = 0; $a < count($thumbnail["name"]); $a++) {
+            if ($thumbnail["error"][$a] != 0) {
                 return array(
                     "status" => "error",
                     "message" => "Please select a thumbnail image.",
@@ -41,8 +39,7 @@ class MovieModel extends Model
             }
 
             $image_info = getimagesize($thumbnail['tmp_name'][$a]);
-            if($image_info == false)
-            {
+            if ($image_info == false) {
                 return array(
                     "status" => "error",
                     "message" => "Please upload valid image file.",
@@ -51,10 +48,8 @@ class MovieModel extends Model
             }
         }
 
-        for ($a = 0; $a < count($trailers["name"]); $a++)
-        {
-            if ($trailers["error"][$a] != 0)
-            {
+        for ($a = 0; $a < count($trailers["name"]); $a++) {
+            if ($trailers["error"][$a] != 0) {
                 return array(
                     "status" => "error",
                     "message" => "Please select a trailer.",
@@ -62,8 +57,7 @@ class MovieModel extends Model
                 );
             }
 
-            if (!preg_match('/video\/*/', $trailers['type'][$a]))
-            {
+            if (!preg_match('/video\/*/', $trailers['type'][$a])) {
                 return array(
                     "status" => "error",
                     "message" => "Please upload valid video trailer file.",
@@ -78,8 +72,7 @@ class MovieModel extends Model
         $movie_id = mysqli_insert_id($this->connection) or die(mysqli_error($this->connection));
 
         // Save movie thumbnails
-        for ($a = 0; $a < count($thumbnail["name"]); $a++)
-        {
+        for ($a = 0; $a < count($thumbnail["name"]); $a++) {
             $file_path = "uploads/movie_thumbnails/" . time() . "-" . $thumbnail["name"][$a];
             move_uploaded_file($thumbnail["tmp_name"][$a], $file_path);
 
@@ -88,8 +81,7 @@ class MovieModel extends Model
         }
 
         // Save movie trailers
-        for ($a = 0; $a < count($trailers["name"]); $a++)
-        {
+        for ($a = 0; $a < count($trailers["name"]); $a++) {
             $file_path = "uploads/movie_trailers/" . time() . "-" . $trailers["name"][$a];
             move_uploaded_file($trailers["tmp_name"][$a], $file_path);
 
@@ -98,22 +90,19 @@ class MovieModel extends Model
         }
 
         // Save categories
-        for ($a = 0; $a < count($categories); $a++)
-        {
+        for ($a = 0; $a < count($categories); $a++) {
             $sql = "INSERT INTO `movie_categories`(`movie_id`, `category_id`) VALUES ('" . $movie_id . "','" . $categories[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
 
         // Save cinemas
-        for ($a = 0; $a < count($cinemas); $a++)
-        {
+        for ($a = 0; $a < count($cinemas); $a++) {
             $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
 
         // Save casts
-        for ($a = 0; $a < count($casts); $a++)
-        {
+        for ($a = 0; $a < count($casts); $a++) {
             $sql = "INSERT INTO `movie_cast`(`movie_id`, `cast_id`) VALUES ('" . $movie_id . "','" . $casts[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
@@ -144,28 +133,24 @@ class MovieModel extends Model
         $trailers = $_FILES["trailers"];
 
         // Save movie thumbnails
-        for ($a = 0; $a < count($thumbnail["name"]); $a++)
-        {
+        for ($a = 0; $a < count($thumbnail["name"]); $a++) {
             $file_path = "uploads/movie_thumbnails/" . time() . "-" . $thumbnail["name"][$a];
             $is_saved = move_uploaded_file($thumbnail["tmp_name"][$a], $file_path);
 
-            if ($is_saved)
-            {
+            if ($is_saved) {
                 $sql = "INSERT INTO `movie_thumbnails`(`movie_id`, `file_path`) VALUES ('" . $movie_id . "','" . $file_path . "')";
                 mysqli_query($this->connection, $sql);
             }
         }
 
         // Save movie trailers
-        for ($a = 0; $a < count($trailers["name"]); $a++)
-        {
+        for ($a = 0; $a < count($trailers["name"]); $a++) {
             $trailers["name"][$a] = $this->secure_input($trailers["name"][$a]);
-            
+
             $file_path = "uploads/movie_trailers/" . time() . "-" . $trailers["name"][$a];
             $is_saved = move_uploaded_file($trailers["tmp_name"][$a], $file_path);
 
-            if ($is_saved)
-            {
+            if ($is_saved) {
                 $sql = "INSERT INTO `trailers`(`movie_id`, `file_path`) VALUES ('" . $movie_id . "','" . $file_path . "')";
                 mysqli_query($this->connection, $sql) or die(mysqli_error($this->connection));
             }
@@ -180,8 +165,7 @@ class MovieModel extends Model
         mysqli_query($this->connection, $sql);
 
         // Save new categories
-        for ($a = 0; $a < count($categories); $a++)
-        {
+        for ($a = 0; $a < count($categories); $a++) {
             $sql = "INSERT INTO `movie_categories`(`movie_id`, `category_id`) VALUES ('" . $movie_id . "','" . $categories[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
@@ -189,21 +173,52 @@ class MovieModel extends Model
         // delete previous cinemas
         $sql = "DELETE FROM `movie_cinemas` WHERE `movie_id` = '" . $movie_id . "'";
         mysqli_query($this->connection, $sql);
-        
+
         // Save new cinemas
-        for ($a = 0; $a < count($cinemas); $a++)
-        {
+        for ($a = 0; $a < count($cinemas); $a++) {
             $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
 
+        // $sql = "SELECT * FROM `ticket` INNER JOIN `movie_cinemas` ON ticket.movie_cinema_id = movie_cinemas.id WHERE `movie_id` = '" . $movie_id . "'";
+        // $movie_cinemas = mysqli_query($this->connection, $sql);
+
+        // delete previous cinemas
+        // $sql = "DELETE FROM `movie_cinemas` WHERE `movie_id` = '" . $movie_id . "'";
+        // mysqli_query($this->connection, $sql);
+
+        // // Save new cinemas
+        // for ($a = 0; $a < count($cinemas); $a++) {
+        //     $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
+        //     mysqli_query($this->connection, $sql);
+        //     $new_movie_cinema_id = mysqli_insert_id($this->connection) or die(mysqli_error($this->connection));
+        //     $sql = "UPDATE `tickets` SET `cinema_id` = '" . $new_movie_cinema_id . "', `movie_time` = '" . $cinema_time[$a] . "' WHERE id = '" . $movie_cinema->id . "'";
+        // }
+
+        // Save new cinemas
+        // $sql = "SELECT * FROM `movie_cinemas` INNER JOIN `cinemas` ON movie_cinemas.cinema_id = cinemas.id WHERE `movie_id` = '" . $movie_id . "'";
+        // $movie_cinemas = mysqli_query($this->connection, $sql);
+        // for ($a = 0; $a < count($cinemas); $a++) {
+        //     while ($movie_cinema = mysqli_fetch_object($movie_cinemas)) {
+        //         if (($cinemas[$a] == $movie_cinema->name) && (strtotime($cinema_time[$a]) == strtotime($movie_cinema->movie_time))) {
+        //             $sql = "UPDATE `movie_cinemas` SET `movie_id` = '" . $movie_id . "', `cinema_id` = '" . $cinemas[$a] . "', `movie_time` = '" . $cinema_time[$a] . "' WHERE id = '" . $movie_cinema->id . "'";
+        //             mysqli_query($this->connection, $sql);
+        //         } else {
+        //             $sql = "DELETE FROM `movie_cinemas` WHERE `id` = '" . $movie_cinema->id . "'";
+        //             mysqli_query($this->connection, $sql);
+
+        //             $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
+        //             mysqli_query($this->connection, $sql);
+        //         }
+        //     }
+        // }
+
         // delete previous casts
         $sql = "DELETE FROM `movie_cast` WHERE `movie_id` = '" . $movie_id . "'";
         mysqli_query($this->connection, $sql);
-        
+
         // Save new casts
-        for ($a = 0; $a < count($casts); $a++)
-        {
+        for ($a = 0; $a < count($casts); $a++) {
             $sql = "INSERT INTO `movie_cast`(`movie_id`, `cast_id`) VALUES ('" . $movie_id . "','" . $casts[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
@@ -219,19 +234,15 @@ class MovieModel extends Model
 
     public function get_all($admin_id, $is_super_admin)
     {
-        if ($is_super_admin)
-        {
+        if ($is_super_admin) {
             $sql = "SELECT * FROM movies ORDER BY id DESC";
-        }
-        else
-        {
+        } else {
             $sql = "SELECT * FROM movies WHERE created_by = '" . $admin_id . "' ORDER BY id DESC";
         }
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $row);
         }
         return $data;
@@ -243,29 +254,25 @@ class MovieModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             $sql = "SELECT * FROM movie_thumbnails WHERE movie_id = '" . $row->id . "'";
             $result_thumbnails = mysqli_query($this->connection, $sql);
             $thumbnails = array();
-            while ($row_thumbnail = mysqli_fetch_object($result_thumbnails))
-            {
+            while ($row_thumbnail = mysqli_fetch_object($result_thumbnails)) {
                 array_push($thumbnails, $row_thumbnail);
             }
 
             $sql = "SELECT * FROM trailers WHERE movie_id = '" . $row->id . "'";
             $result_trailers = mysqli_query($this->connection, $sql);
             $trailers = array();
-            while ($row_trailer = mysqli_fetch_object($result_trailers))
-            {
+            while ($row_trailer = mysqli_fetch_object($result_trailers)) {
                 array_push($trailers, $row_trailer);
             }
 
             $sql = "SELECT * FROM movie_cinemas WHERE movie_id = '" . $row->id . "'";
             $result_cinemas = mysqli_query($this->connection, $sql);
             $cinemas = array();
-            while ($row_cinema = mysqli_fetch_object($result_cinemas))
-            {
+            while ($row_cinema = mysqli_fetch_object($result_cinemas)) {
                 array_push($cinemas, $row_cinema);
             }
 
@@ -286,8 +293,7 @@ class MovieModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $row);
         }
         return $data;
@@ -297,8 +303,7 @@ class MovieModel extends Model
     {
         $sql = "SELECT * FROM movies WHERE id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
-        if (mysqli_num_rows($result) == 0)
-        {
+        if (mysqli_num_rows($result) == 0) {
             die("Movie does not exists.");
         }
         $movie = mysqli_fetch_object($result);
@@ -306,8 +311,7 @@ class MovieModel extends Model
         $movie->discount_price = 0;
 
         // set price_per_ticket if there is any discount
-        if ($this->has_coupon_code($movie_id))
-        {
+        if ($this->has_coupon_code($movie_id)) {
             $coupon_code = $this->get_coupon_code($movie_id);
             $discount = $movie->price_per_ticket * ($coupon_code->discount / 100);
             $movie->discount_price = $movie->price_per_ticket - $discount;
@@ -320,8 +324,7 @@ class MovieModel extends Model
     {
         $sql = "SELECT * FROM movie_thumbnails WHERE movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
-        if (mysqli_num_rows($result) == 0)
-        {
+        if (mysqli_num_rows($result) == 0) {
             return "";
         }
         return mysqli_fetch_object($result)->file_path;
@@ -355,9 +358,8 @@ class MovieModel extends Model
     {
         $sql = "SELECT * FROM movies WHERE id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
-        
-        if (mysqli_num_rows($result) == 0)
-        {
+
+        if (mysqli_num_rows($result) == 0) {
             die("Movie does not exists.");
         }
 
@@ -365,66 +367,58 @@ class MovieModel extends Model
         $movie->discount_price = 0;
 
         // set price_per_ticket if there is any discount
-        if ($this->has_coupon_code($movie_id))
-        {
+        if ($this->has_coupon_code($movie_id)) {
             $coupon_code = $this->get_coupon_code($movie_id);
             $discount = $movie->price_per_ticket * ($coupon_code->discount / 100);
             $movie->discount_price = $movie->price_per_ticket - $discount;
         }
-        
+
         $sql = "SELECT * FROM movie_thumbnails WHERE movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
         $thumbnails = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($thumbnails, $row);
         }
 
         $sql = "SELECT * FROM trailers WHERE movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
         $trailers = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($trailers, $row);
         }
 
         $sql = "SELECT categories.* FROM movie_categories INNER JOIN categories ON movie_categories.category_id = categories.id WHERE movie_categories.movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
         $categories = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($categories, $row);
         }
 
         $sql = "SELECT *, movie_cinemas.id AS movie_cinema_id FROM movie_cinemas INNER JOIN cinemas ON movie_cinemas.cinema_id = cinemas.id WHERE movie_cinemas.movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
         $cinemas = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($cinemas, $row);
         }
 
         $sql = "SELECT * FROM tickets INNER JOIN users ON tickets.user_id = users.id WHERE tickets.movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
         $tickets = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($tickets, $row);
         }
 
         $sql = "SELECT * FROM comments WHERE movie_id = '" . $movie_id . "' ORDER BY id DESC";
         $result = mysqli_query($this->connection, $sql);
         $comments = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($comments, $row);
         }
 
         $sql = "SELECT *, celebrities.name AS celebrity_name FROM movie_cast INNER JOIN celebrities ON celebrities.id = movie_cast.cast_id WHERE movie_cast.movie_id = '" . $movie_id . "' ORDER BY movie_cast.id DESC";
         $result = mysqli_query($this->connection, $sql);
         $casts = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($casts, $row);
         }
 
@@ -446,10 +440,8 @@ class MovieModel extends Model
         $sql = "SELECT * FROM movie_thumbnails WHERE movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
 
-        while ($row = mysqli_fetch_object($result))
-        {
-            if (file_exists($row->file_path))
-            {
+        while ($row = mysqli_fetch_object($result)) {
+            if (file_exists($row->file_path)) {
                 unlink($row->file_path);
             }
         }
@@ -460,10 +452,8 @@ class MovieModel extends Model
         $sql = "SELECT * FROM trailers WHERE movie_id = '" . $movie_id . "'";
         $result = mysqli_query($this->connection, $sql);
 
-        while ($row = mysqli_fetch_object($result))
-        {
-            if (file_exists($row->file_path))
-            {
+        while ($row = mysqli_fetch_object($result)) {
+            if (file_exists($row->file_path)) {
                 unlink($row->file_path);
             }
         }
@@ -492,11 +482,9 @@ class MovieModel extends Model
         $sql = "SELECT * FROM movie_thumbnails WHERE id = '" . $thumbnail_id . "'";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) > 0)
-        {
+        if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_object($result);
-            if (file_exists($row->file_path))
-            {
+            if (file_exists($row->file_path)) {
                 unlink($row->file_path);
             }
         }
@@ -510,11 +498,9 @@ class MovieModel extends Model
         $sql = "SELECT * FROM trailers WHERE id = '" . $trailer_id . "'";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) > 0)
-        {
+        if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_object($result);
-            if (file_exists($row->file_path))
-            {
+            if (file_exists($row->file_path)) {
                 unlink($row->file_path);
             }
         }
@@ -527,9 +513,8 @@ class MovieModel extends Model
     {
         $sql = "SELECT * FROM movies WHERE id = '" . ($movie_id + 1) . "'";
         $result = mysqli_query($this->connection, $sql);
-        
-        if (mysqli_num_rows($result) == 0)
-        {
+
+        if (mysqli_num_rows($result) == 0) {
             return null;
         }
 
@@ -540,9 +525,8 @@ class MovieModel extends Model
     {
         $sql = "SELECT * FROM movies WHERE id = '" . ($movie_id - 1) . "'";
         $result = mysqli_query($this->connection, $sql);
-        
-        if (mysqli_num_rows($result) == 0)
-        {
+
+        if (mysqli_num_rows($result) == 0) {
             return null;
         }
 
@@ -557,8 +541,7 @@ class MovieModel extends Model
         $message = $_POST["message"];
         $movie_id = $_POST["movie_id"];
 
-        if (empty($name) || empty($email) || empty($message) || empty($movie_id))
-        {
+        if (empty($name) || empty($email) || empty($message) || empty($movie_id)) {
             return array(
                 "status" => "error",
                 "message" => "Please fill required fields."
@@ -580,16 +563,12 @@ class MovieModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             $sql = "SELECT * FROM movie_thumbnails WHERE movie_id = '" . $row->id . "' LIMIT 1";
             $result_thumbnails = mysqli_query($this->connection, $sql);
-            if (mysqli_num_rows($result_thumbnails) > 0)
-            {
+            if (mysqli_num_rows($result_thumbnails) > 0) {
                 $row->picture = mysqli_fetch_object($result_thumbnails)->file_path;
-            }
-            else
-            {
+            } else {
                 $row->picture = "public/img/user-placeholder.png";
             }
             array_push($data, $row);
@@ -608,10 +587,9 @@ class MovieModel extends Model
     {
         $sql = "SELECT DISTINCT(movie_id) AS movie_id FROM movie_cinemas";
         $result = mysqli_query($this->connection, $sql);
-        
+
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $this->get($row->movie_id));
         }
         return $data;
@@ -623,8 +601,7 @@ class MovieModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $row);
         }
         return $data;
@@ -636,5 +613,4 @@ class MovieModel extends Model
         $result = mysqli_query($this->connection, $sql);
         return mysqli_num_rows($result) > 0;
     }
-
 }

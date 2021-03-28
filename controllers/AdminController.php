@@ -366,7 +366,7 @@ class AdminController extends Controller
                                     foreach ($variables as $key => $value)
                                         $email = str_replace($key, $value, $email);
 
-                                    $this->send_mail($subscriber->email, "MoviePoint New Movie", $email);
+                                    $this->send_mail($subscriber->email, "Cinema New Movie", $email);
                                 }
                             }
 
@@ -813,7 +813,7 @@ class AdminController extends Controller
                 foreach ($variables as $key => $value)
                     $email = str_replace($key, $value, $email);
 
-                $this->send_mail($ticket_detail->user->email, "MoviePoint Booking has been cancelled.", $email);
+                $this->send_mail($ticket_detail->user->email, "Cinema Booking has been cancelled.", $email);
 
                 foreach ($ticket_ids as $id) {
                     $TicketModel->delete_ticket($id);
