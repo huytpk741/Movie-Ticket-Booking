@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UserController
  */
@@ -8,24 +9,18 @@ class UserController extends Controller
     {
         $token = $_POST["token"];
 
-        if (Security::is_valid_token($token))
-        {
+        if (Security::is_valid_token($token)) {
             $model_response = $this->load_model("UsersModel")->login();
             $response["error"] = $model_response["error"];
 
-            if (empty($response["error"]))
-            {
+            if (empty($response["error"])) {
                 $_SESSION["user"] = $model_response["message"];
                 header("Location: " . URL);
-            }
-            else
-            {
+            } else {
                 $_SESSION["login_error"] = $response["error"];
                 header("Location: " . $_SERVER["HTTP_REFERER"]);
             }
-        }
-        else
-        {
+        } else {
             $_SESSION["login_error"] = "Token mismatch";
             header("Location: " . $_SERVER["HTTP_REFERER"]);
         }
@@ -35,25 +30,21 @@ class UserController extends Controller
     {
         $token = $_POST["token"];
 
-        if (Security::is_valid_token($token))
-        {
+        if (Security::is_valid_token($token)) {
             $UsersModel = $this->load_model("UsersModel");
-            if ($UsersModel->is_exists($_POST["email"]))
-            {
+            if ($UsersModel->is_exists($_POST["email"])) {
                 $_SESSION["login_error"] = "Email already exists";
                 header("Location: " . $_SERVER["HTTP_REFERER"]);
-            }
-            else
-            {
+            } else {
                 $verification_code = $UsersModel->register();
-                
+
                 $email = file_get_contents("views/emails/verification-email.php");
                 $variables = array(
                     "{{ website_url }}" => URL,
                     "{{ verification_code }}" => $verification_code,
                     "{{ name }}" => $_POST["name"]
                 );
-             
+
                 foreach ($variables as $key => $value)
                     $email = str_replace($key, $value, $email);
                 $this->send_mail($_POST["email"], "Verify Email - MoviePoint", $email);
@@ -61,9 +52,7 @@ class UserController extends Controller
                 $_SESSION["login_verification"] = "Account has been created. Please verify your email address.";
                 header("Location: " . URL . "user/verify_email/" . $_POST["email"]);
             }
-        }
-        else
-        {
+        } else {
             $_SESSION["login_error"] = "Token mismatch";
             header("Location: " . $_SERVER["HTTP_REFERER"]);
         }
@@ -73,22 +62,16 @@ class UserController extends Controller
     {
         $error = "";
 
-        if (!empty($temp_error))
-        {
+        if (!empty($temp_error)) {
             $error = "Please verify your email";
         }
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST")
-        {
-            if (!Security::is_valid_token($_POST["token"]))
-            {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (!Security::is_valid_token($_POST["token"])) {
                 $error = "This page has been expired";
-            }
-            else
-            {
+            } else {
                 $is_verified = $this->load_model("UsersModel")->do_verify_email();
-                if ($is_verified)
-                {
+                if ($is_verified) {
                     header("Location: " . URL . "home/index/verified");
                     exit();
                 }
@@ -103,21 +86,14 @@ class UserController extends Controller
 
     public function forgot_password()
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST")
-        {
-            if (!Security::is_valid_token($_POST["token"]))
-            {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (!Security::is_valid_token($_POST["token"])) {
                 $_SESSION["login_error"] = "This page has been expired";
-            }
-            else
-            {
+            } else {
                 $user = $this->load_model("UsersModel")->get_by_email($_POST["email"]);
-                if ($user == null)
-                {
+                if ($user == null) {
                     $_SESSION["login_error"] = "Email does not exists.";
-                }
-                else
-                {
+                } else {
                     $token = md5(time());
                     $link = URL . "user/reset_password/" . $_POST["email"] . "/" . $token;
 
@@ -127,7 +103,7 @@ class UserController extends Controller
                         "{{ name }}" => $user->name,
                         "{{ reset_link }}" => $link
                     );
-                 
+
                     foreach ($variables as $key => $value)
                         $email = str_replace($key, $value, $email);
                     $this->send_mail($_POST["email"], "Reset Password - MoviePoint", $email);
@@ -146,27 +122,19 @@ class UserController extends Controller
     {
         $error = "";
         $is_reset_password = $this->load_model("UsersModel")->is_reset_password($email, $token);
-        if ($is_reset_password)
-        {
-            if ($_SERVER["REQUEST_METHOD"] == "POST")
-            {
-                if (!Security::is_valid_token($_POST["token"]))
-                {
+        if ($is_reset_password) {
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                if (!Security::is_valid_token($_POST["token"])) {
                     $error = "This page has been expired";
-                }
-                else
-                {
+                } else {
                     $password = $_POST["password"];
                     $confirm_password = $_POST["confirm_password"];
 
-                    if ($password == $confirm_password)
-                    {
+                    if ($password == $confirm_password) {
                         $this->load_model("UsersModel")->reset_password($email, $token);
                         header("Location: " . URL . "home/index/reset");
                         exit();
-                    }
-                    else
-                    {
+                    } else {
                         $error = "Password does not match";
                     }
                 }
@@ -175,9 +143,7 @@ class UserController extends Controller
             require_once $this->get_header();
             require_once VIEW . 'user/reset_password.php';
             require_once $this->get_footer();
-        }
-        else
-        {
+        } else {
             show_404();
         }
     }
@@ -195,30 +161,25 @@ class UserController extends Controller
 
     public function update_profile()
     {
-        if (isset($_SESSION["user"]))
-        {
+        if (isset($_SESSION["user"])) {
             $user = $this->get_logged_in_user();
-            
-            if ($_SERVER["REQUEST_METHOD"] == "POST")
-            {
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $folder_path = $user->profile_image;
-                if ($_FILES["profile_image"]["error"] == 0)
-                {
+                if ($_FILES["profile_image"]["error"] == 0) {
                     unlink($folder_path);
-                    
+
                     $folder_path = "uploads/profile_images/" . $user->id . "_" . $_FILES["profile_image"]["name"];
                     move_uploaded_file($_FILES["profile_image"]["tmp_name"], $folder_path);
                 }
-                
+
                 $this->load_model("UsersModel")->update_profile($user->id, $folder_path);
             }
-            
+
             require_once VIEW . "header.php";
             require_once VIEW . "update_profile.php";
             require_once VIEW . "footer.php";
-        }
-        else
-        {
+        } else {
             $this->goto_login();
         }
     }
@@ -226,7 +187,7 @@ class UserController extends Controller
     public function subscribe()
     {
         $this->load_model("SubscriberModel")->subscribe();
-        
+
         $_SESSION["success_subscribe"] = "User has been subscribed";
         $_SESSION["subscribe_email"] = $_POST["email"];
 
@@ -240,6 +201,33 @@ class UserController extends Controller
         require_once VIEW . "layout/header.php";
         require_once VIEW . "unsubscribe.php";
         require_once VIEW . "layout/footer.php";
-        
+    }
+
+    public function change_password()
+    {
+        if ($this->is_logged_in()) {
+            $input = array();
+            if ($_POST) {
+                $token = $_POST["token"];
+
+                if (Security::is_valid_token($token)) {
+                    $response = $this->load_model("UsersModel")->change_password();
+                    if ($response["status"] == "success") {
+                        $_SESSION["login_success"] = $response["message"];
+                        header("Location: " . URL);
+                    } else {
+                        $_SESSION["login_error"] = $response["message"];
+                        $input = $_POST;
+                        header("Location: " . $_SERVER["HTTP_REFERER"]);
+                    }
+                } else {
+                    $_SESSION["login_error"] = "Token mismatch!";
+                    header("Location: " . $_SERVER["HTTP_REFERER"]);
+                }
+            }
+        } else {
+            $_SESSION["login_error"] = "Please login!";
+            header("Location: " . $_SERVER["HTTP_REFERER"]);
+        }
     }
 }

@@ -69,6 +69,10 @@
             return isset($_SESSION["admin"]);
         }
 
+        public function is_logged_in() {
+            return isset($_SESSION["user"]);
+        }
+
         public function get_logged_in_user()
         {
             if (isset($_SESSION["user"]))

@@ -1,5 +1,5 @@
 <?php
-	define("URL", "http://localhost/booking-test/");
+	define("URL", "http://localhost/Movie-Ticket-Booking/");
 	define("VIEW", "views/");
     define("PUBLIC_PATH", URL . "public/");
 	define("CSS", URL . "public/css/");

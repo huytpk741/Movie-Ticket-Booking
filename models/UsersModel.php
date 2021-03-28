@@ -1,4 +1,5 @@
 <?php
+
 /**
  * UsersModel
  */
@@ -42,27 +43,18 @@ class UsersModel extends Model
         $sql = "SELECT * FROM `" . $this->table . "` WHERE `email` = '$email'";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) > 0)
-        {
+        if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_object($result);
-            if (password_verify($password, $row->password))
-            {
-                if ($row->verified_at == NULL)
-                {
+            if (password_verify($password, $row->password)) {
+                if ($row->verified_at == NULL) {
                     $response["error"] = "Please verify your account in order to activate.";
-                }
-                else
-                {
+                } else {
                     $response["message"] = $row;
                 }
-            }
-            else
-            {
+            } else {
                 $response["error"] = "Password does not match";
             }
-        }
-        else
-        {
+        } else {
             $response["error"] = "Email does not exists";
         }
 
@@ -86,8 +78,7 @@ class UsersModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             array_push($data, $row);
         }
         return $data;
@@ -113,8 +104,7 @@ class UsersModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $is_verified = mysqli_num_rows($result) > 0;
-        if ($is_verified)
-        {
+        if ($is_verified) {
             $sql = "UPDATE `" . $this->table . "` SET verified_at=NOW() WHERE email = '$email' AND verification_code = '$verification_code'";
             mysqli_query($this->connection, $sql);
         }
@@ -125,7 +115,7 @@ class UsersModel extends Model
     public function make_movie_manager($user_id)
     {
         $role = "manage_movies";
-        
+
         $sql = "UPDATE `" . $this->table . "` SET role='" . $role . "' WHERE id = '" . $user_id . "'";
         mysqli_query($this->connection, $sql);
     }
@@ -170,5 +160,43 @@ class UsersModel extends Model
 
         $sql = "DELETE FROM `" . $this->table . "` WHERE id = '" . $id . "'";
         mysqli_query($this->connection, $sql);
+    }
+
+    public function change_password()
+    {
+        $current_password = $_POST["current_password"];
+        $new_password = $_POST["new_password"];
+        $confirm_password = $_POST["confirm_password"];
+
+        $user = $this->get($_SESSION["user"]->id);
+        if (password_verify($current_password, $user->password)) {
+            if ($new_password == $confirm_password) {
+                if ($new_password != $current_password) {
+                    $sql = "UPDATE `" . $this->table . "` SET password = '" . password_hash($new_password, PASSWORD_DEFAULT) . "' WHERE `id` = '" . $_SESSION["user"]->id . "'";
+                    mysqli_query($this->connection, $sql);
+
+                    return array(
+                        "status" => "success",
+                        "message" => "Password has been changed."
+                    );
+                }
+                else {
+                    return array(
+                        "status" => "error",
+                        "message" => "New password must be different from old password."
+                    );
+                }
+            } else {
+                return array(
+                    "status" => "error",
+                    "message" => "Password does not match."
+                );
+            }
+        } else {
+            return array(
+                "status" => "error",
+                "message" => "Current password not correct."
+            );
+        }
     }
 }
