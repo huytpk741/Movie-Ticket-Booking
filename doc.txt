@@ -1,0 +1,6 @@
+Note:
+- system/config.php (database setup & stripe publishable and secret keys)
+- views/movies/movie-detail.php (change facebook app ID)
+- controllers/Controller.php (SMTP email configurations)
+
+- views/payments/order.php (for paypal keys)

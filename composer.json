@@ -1,0 +1,12 @@
+{
+    "name": "booking-test",
+    "authors": [
+        {
+            "name": "Tran Quoc Huy",
+            "email": "huytpk741@gmail.com"
+        }
+    ],
+    "require": {
+        "stripe/stripe-php": "^7.76"
+    }
+}
