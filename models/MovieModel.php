@@ -170,48 +170,45 @@ class MovieModel extends Model
             mysqli_query($this->connection, $sql);
         }
 
-        // delete previous cinemas
-        $sql = "DELETE FROM `movie_cinemas` WHERE `movie_id` = '" . $movie_id . "'";
-        mysqli_query($this->connection, $sql);
+        $updated_cinemas = [];
+        $un_updated_cinemas = [];
+        for ($a = 0; $a < count($cinemas); $a++)
+        {
+            $sql = "SELECT * FROM `movie_cinemas` WHERE movie_id = '" . $movie_id . "' AND cinema_id = '" . $cinemas[$a] . "'";
+            $result = mysqli_query($this->connection, $sql);
 
-        // Save new cinemas
-        for ($a = 0; $a < count($cinemas); $a++) {
-            $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
+            $sql = "UPDATE `movie_cinemas` SET cinema_id = '" . $cinemas[$a] . "', movie_time = '" . $cinema_time[$a] . "' WHERE movie_id = '" . $movie_id . "' AND cinema_id = '" . $cinemas[$a] . "'";
+            mysqli_query($this->connection, $sql);
+
+            if (mysqli_num_rows($result) > 0)
+            {
+                array_push($updated_cinemas, $cinemas[$a]);
+            }
+            else
+            {
+                array_push($un_updated_cinemas, [
+                    "cinema" => $cinemas[$a],
+                    "cinema_time" => $cinema_time[$a]
+                ]);
+            }
+        }
+
+        // if admin has deleted cinemas from movie
+        $sql = "SELECT * FROM `movie_cinemas` WHERE movie_id = '" . $movie_id . "'";
+        $result = mysqli_query($this->connection, $sql);
+        $previous_cinemas = mysqli_num_rows($result);
+
+        if ($previous_cinemas > count($cinemas))
+        {
+            $sql = "DELETE FROM `movie_cinemas` WHERE movie_id = '" . $movie_id . "' AND cinema_id NOT IN (" . implode(',', $updated_cinemas) . ")";
             mysqli_query($this->connection, $sql);
         }
 
-        // $sql = "SELECT * FROM `ticket` INNER JOIN `movie_cinemas` ON ticket.movie_cinema_id = movie_cinemas.id WHERE `movie_id` = '" . $movie_id . "'";
-        // $movie_cinemas = mysqli_query($this->connection, $sql);
-
-        // delete previous cinemas
-        // $sql = "DELETE FROM `movie_cinemas` WHERE `movie_id` = '" . $movie_id . "'";
-        // mysqli_query($this->connection, $sql);
-
-        // // Save new cinemas
-        // for ($a = 0; $a < count($cinemas); $a++) {
-        //     $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
-        //     mysqli_query($this->connection, $sql);
-        //     $new_movie_cinema_id = mysqli_insert_id($this->connection) or die(mysqli_error($this->connection));
-        //     $sql = "UPDATE `tickets` SET `cinema_id` = '" . $new_movie_cinema_id . "', `movie_time` = '" . $cinema_time[$a] . "' WHERE id = '" . $movie_cinema->id . "'";
-        // }
-
-        // Save new cinemas
-        // $sql = "SELECT * FROM `movie_cinemas` INNER JOIN `cinemas` ON movie_cinemas.cinema_id = cinemas.id WHERE `movie_id` = '" . $movie_id . "'";
-        // $movie_cinemas = mysqli_query($this->connection, $sql);
-        // for ($a = 0; $a < count($cinemas); $a++) {
-        //     while ($movie_cinema = mysqli_fetch_object($movie_cinemas)) {
-        //         if (($cinemas[$a] == $movie_cinema->name) && (strtotime($cinema_time[$a]) == strtotime($movie_cinema->movie_time))) {
-        //             $sql = "UPDATE `movie_cinemas` SET `movie_id` = '" . $movie_id . "', `cinema_id` = '" . $cinemas[$a] . "', `movie_time` = '" . $cinema_time[$a] . "' WHERE id = '" . $movie_cinema->id . "'";
-        //             mysqli_query($this->connection, $sql);
-        //         } else {
-        //             $sql = "DELETE FROM `movie_cinemas` WHERE `id` = '" . $movie_cinema->id . "'";
-        //             mysqli_query($this->connection, $sql);
-
-        //             $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
-        //             mysqli_query($this->connection, $sql);
-        //         }
-        //     }
-        // }
+        for ($a = 0; $a < count($un_updated_cinemas); $a++)
+        {
+            $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $un_updated_cinemas[$a]["cinema"] . "', '" . $un_updated_cinemas[$a]["cinema_time"] . "')";
+            mysqli_query($this->connection, $sql);
+        }
 
         // delete previous casts
         $sql = "DELETE FROM `movie_cast` WHERE `movie_id` = '" . $movie_id . "'";
@@ -422,6 +419,13 @@ class MovieModel extends Model
             array_push($casts, $row);
         }
 
+        $sql = "SELECT * FROM orders WHERE movie_id = '" . $movie_id . "'";
+        $result = mysqli_query($this->connection, $sql);
+        $orders = array();
+        while ($row = mysqli_fetch_object($result)) {
+            array_push($orders, $row);
+        }
+
         $object = new stdClass();
         $object->movie = $movie;
         $object->thumbnails = $thumbnails;
@@ -431,6 +435,7 @@ class MovieModel extends Model
         $object->tickets = $tickets;
         $object->comments = $comments;
         $object->casts = $casts;
+        $object->orders = $orders;
 
         return $object;
     }

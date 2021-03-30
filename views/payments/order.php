@@ -31,7 +31,13 @@
             <div class="row flexbox-center">
                 <div class="col-md-12 text-center">
                     Order # <?php echo $order_detail["order"]->id; ?>
-                    <p id="countdown"></p>
+                    <!-- <p id="countdown"></p> -->
+                </div>
+            </div>
+            <div class="row flexbox-center">
+                <div class="col-md-12 text-center">
+                    <p style="font-size: 30px; color: #ff7600;" id="countdown"></p>
+                    You have 5 minutes to finish your payment!
                 </div>
             </div>
 
@@ -85,7 +91,7 @@
             <?php endforeach; ?>
 
             <?php if (!$has_coupon_code_applied) : ?>
-                <div class="row" style="margin-top: 30px;">
+                <div class="row" style="margin-top: 30px; margin-left:35px">
                     <div class="offset-md-3 col-md-6">
 
                         <form method="POST" onsubmit="return applyCouponCode(this);">
@@ -193,7 +199,7 @@
         // If the count down is over, write some text 
         if (distance < 0) {
             clearInterval(x);
-            document.getElementById("countdown").innerHTML = "EXPIRED";
+            document.getElementById("countdown").innerHTML = "0m 0s";
             var movie = "<?php echo $order_detail["movie"]->id; ?>";
 
             var ajax = new XMLHttpRequest();
@@ -276,7 +282,7 @@
         var order_id = "<?php echo $order_detail["order"]->id; ?>";
         var token = "<?php echo $order_detail["payment"]->is_confirm; ?>";
         var ajax = new XMLHttpRequest();
-        ajax.open("POST", document.getElementById("base-url").value + "payment/payment_successfull/" + order_id + "/" + type + "/" + token, true);
+        ajax.open("POST", document.getElementById("base-url").value + "payment/payment_successfull/"  + token, true);
 
         ajax.onreadystatechange = function() {
             if (this.readyState == 4) {

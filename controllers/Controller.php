@@ -43,7 +43,7 @@
             $mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 465;                                    // TCP port to connect to
 
-            $mail->setFrom('your_gmail', 'Cinema');
+            $mail->setFrom('huytpk7411@gmail.com', 'Cinema Ticket Booking');
             $mail->addAddress($to);     // Add a recipient
             $mail->isHTML(true);                                  // Set email format to HTML
 

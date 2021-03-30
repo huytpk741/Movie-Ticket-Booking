@@ -93,7 +93,7 @@
 
                             <li>
                                 <div class="transformers-left">
-                                    Writer:
+                                    Writer: 
                                 </div>
                                 <div class="transformers-right">
                                     <?= $movie->movie->writer; ?>

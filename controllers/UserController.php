@@ -47,7 +47,7 @@ class UserController extends Controller
 
                 foreach ($variables as $key => $value)
                     $email = str_replace($key, $value, $email);
-                $this->send_mail($_POST["email"], "Verify Email - MoviePoint", $email);
+                $this->send_mail($_POST["email"], "Verify Email - Cinema", $email);
 
                 $_SESSION["login_verification"] = "Account has been created. Please verify your email address.";
                 header("Location: " . URL . "user/verify_email/" . $_POST["email"]);
@@ -106,7 +106,7 @@ class UserController extends Controller
 
                     foreach ($variables as $key => $value)
                         $email = str_replace($key, $value, $email);
-                    $this->send_mail($_POST["email"], "Reset Password - MoviePoint", $email);
+                    $this->send_mail($_POST["email"], "Reset Password - Cinema", $email);
 
                     $this->load_model("UsersModel")->forgot_password($token);
                     $_SESSION["login_success"] = "Password reset link has been emailed to you.";

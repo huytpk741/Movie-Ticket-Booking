@@ -152,7 +152,7 @@ class TicketController extends Controller
                         foreach ($variables as $key => $value)
                             $email = str_replace($key, $value, $email);
 
-                        $this->send_mail($_SESSION["user"]->email, "MoviePoint Ticket Booking", $email);
+                        $this->send_mail($_SESSION["user"]->email, "Cinema Ticket Booking", $email);
 
                         $_SESSION["success"] = "You need to confirm that you are booking. Please check your email.";
                         header("Location: " . $_SERVER["HTTP_REFERER"]);
