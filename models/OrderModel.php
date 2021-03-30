@@ -5,7 +5,7 @@
  */
 class OrderModel extends Model
 {
-    
+
     function __construct()
     {
         parent::__construct();
@@ -17,8 +17,7 @@ class OrderModel extends Model
         $result = mysqli_query($this->connection, $sql);
 
         $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
+        while ($row = mysqli_fetch_object($result)) {
             $detail = $this->get_detail($row->id);
             array_push($data, $detail);
         }
@@ -48,9 +47,8 @@ class OrderModel extends Model
     {
         $sql = "SELECT * FROM orders WHERE id = '" . $order_id . "'";
         $result = mysqli_query($this->connection, $sql);
-        
-        if (mysqli_num_rows($result) == 0)
-        {
+
+        if (mysqli_num_rows($result) == 0) {
             die("Order does not exists.");
         }
 
@@ -77,15 +75,23 @@ class OrderModel extends Model
             "movie" => $movie,
             "user" => $user,
             "tickets" => [],
+            "thumbnails" => [],
             "coupon" => $coupon,
             "payment" => $payment
         ];
 
+        $sql = "SELECT * FROM movie_thumbnails WHERE movie_id = '" . $order->movie_id . "'";
+        $thumbnails_result = mysqli_query($this->connection, $sql);
+        while ($thumbnail = mysqli_fetch_object($thumbnails_result)) {
+            array_push($data["thumbnails"], [
+                "thumbnail" => $thumbnail,
+            ]);
+        }
+
         $sql = "SELECT * FROM tickets WHERE order_id = '" . $order_id . "'";
         $ticket_result = mysqli_query($this->connection, $sql);
 
-        while ($ticket = mysqli_fetch_object($ticket_result))
-        {
+        while ($ticket = mysqli_fetch_object($ticket_result)) {
             $sql = "SELECT * FROM cinemas WHERE id = '" . $ticket->cinema_id . "'";
             $cinema_result = mysqli_query($this->connection, $sql);
             $cinema = mysqli_fetch_object($cinema_result);
@@ -99,30 +105,33 @@ class OrderModel extends Model
         return $data;
     }
 
-    public function get_movie_by_order($order_id)
-    {
-        $sql = "SELECT * FROM orders INNER JOIN movies ON others.movie_id = movies.id WHERE id = {$order_id}";
-        $result = mysqli_query($this->connection, $sql);
-
-        $data = array();
-        while ($row = mysqli_fetch_object($result))
-        {
-            array_push($data, $row);
-        }
-        return $data;
-    }
-
     public function get($id)
     {
-        $sql = "SELECT * FROM payments WHERE payment_id = $id";
+        $sql = "SELECT * FROM orders WHERE orders = $id";
         $result = mysqli_query($this->connection, $sql);
 
-        if (mysqli_num_rows($result) == 0)
-        {
+        if (mysqli_num_rows($result) == 0) {
             return null;
         }
 
         return mysqli_fetch_object($result);
+    }
+
+    public function get_by_user($user_id)
+    {
+        $sql = "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id DESC";
+        $result = mysqli_query($this->connection, $sql);
+
+        if (mysqli_num_rows($result) == 0) {
+            return null;
+        }
+
+        $data = array();
+        while ($order = mysqli_fetch_object($result)) {
+            $detail = $this->get_detail($order->id);
+            array_push($data, $detail);
+        }
+        return $data;
     }
 
     public function delete($id)
@@ -130,5 +139,4 @@ class OrderModel extends Model
         $sql = "DELETE FROM orders WHERE id = '" . $id . "'";
         mysqli_query($this->connection, $sql) or die(mysqli_error($this->connection));
     }
-
 }

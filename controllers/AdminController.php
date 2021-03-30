@@ -326,24 +326,30 @@ class AdminController extends Controller
         $error = "";
         $message = "";
 
-        if ($this->is_admin_logged_in()) {
-
-            if ($page_type == "add") {
+        if ($this->is_admin_logged_in())
+        {
+            
+            if ($page_type == "add")
+            {
                 $input = array();
 
-                if ($_POST) {
+                if ($_POST)
+                {
                     $token = $_POST["token"];
-
-                    if (Security::is_valid_token($token)) {
+                    
+                    if (Security::is_valid_token($token))
+                    {
                         $admin_user_object = $this->get_logged_in_admin();
 
                         $MovieModel = $this->load_model("MovieModel");
                         $response = $MovieModel->add($admin_user_object->id);
 
-                        if ($response["status"] == "success") {
+                        if ($response["status"] == "success")
+                        {
                             $movie_data = $MovieModel->get($response["movie_id"]);
 
-                            if (strtotime($movie_data->release_date) > time()) {
+                            if (strtotime($movie_data->release_date) > time())
+                            {
                                 $movie = new stdClass();
                                 $movie->thumbnail = $MovieModel->get_thumbnail($response["movie_id"]);
                                 $movie->name = $movie_data->name;
@@ -351,7 +357,8 @@ class AdminController extends Controller
                                 $movie->id = $response["movie_id"];
 
                                 $subscribers = $this->load_model("SubscriberModel")->get_all();
-                                foreach ($subscribers as $subscriber) {
+                                foreach ($subscribers as $subscriber)
+                                {
                                     $email = file_get_contents("views/emails/new-movie.php");
                                     $variables = array(
                                         "{{ logo_url }}" => IMG . "logo.png",
@@ -362,20 +369,24 @@ class AdminController extends Controller
                                         "{{ movie_book_url }}" => URL . "movie/detail/" . $movie->id,
                                         "{{ unsubscribe_url }}" => URL . "user/unsubscribe/" . $subscriber->email
                                     );
-
+                                 
                                     foreach ($variables as $key => $value)
                                         $email = str_replace($key, $value, $email);
 
-                                    $this->send_mail($subscriber->email, "Cinema New Movie", $email);
+                                    $this->send_mail($subscriber->email, "MoviePoint New Movie", $email);
                                 }
                             }
 
                             $message = $response["message"];
-                        } else {
+                        }
+                        else
+                        {
                             $input = $response["input"];
                             $error = $response["message"];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         $error = "Token mismatch";
                     }
                 }
@@ -389,7 +400,8 @@ class AdminController extends Controller
                 require_once ADMIN_VIEW . "footer.php";
             }
 
-            if ($page_type == "delete") {
+            if ($page_type == "delete")
+            {
                 $this->load_model("CategoryModel")->delete_movies($movie_id);
                 $this->load_model("CinemaModel")->delete_movies($movie_id);
                 $this->load_model("MovieModel")->do_delete($movie_id);
@@ -397,18 +409,26 @@ class AdminController extends Controller
                 $error = "Movie has been deleted.";
             }
 
-            if ($page_type == "edit") {
-                if ($_POST) {
+            if ($page_type == "edit")
+            {
+                if ($_POST)
+                {
                     $token = $_POST["token"];
-
-                    if (Security::is_valid_token($token)) {
+                    
+                    if (Security::is_valid_token($token))
+                    {
                         $response = $this->load_model("MovieModel")->edit($movie_id);
-                        if ($response["status"] == "success") {
+                        if ($response["status"] == "success")
+                        {
                             $message = $response["message"];
-                        } else {
+                        }
+                        else
+                        {
                             $error = $response["message"];
                         }
-                    } else {
+                    }
+                    else
+                    {
                         $error = "Token mismatch";
                     }
                 }
@@ -423,7 +443,8 @@ class AdminController extends Controller
                 require_once ADMIN_VIEW . "footer.php";
             }
 
-            if ($page_type == "detail") {
+            if ($page_type == "detail")
+            {
                 $data = $this->load_model("MovieModel")->get_detail($movie_id);
                 $tickets = $this->load_model("TicketModel")->get_by_movie($movie_id);
                 $tickets_sold = $this->load_model("TicketModel")->get_tickets_sold($movie_id);
@@ -433,7 +454,8 @@ class AdminController extends Controller
                 require_once ADMIN_VIEW . "footer.php";
             }
 
-            if ($page_type == "all" || $page_type == "delete") {
+            if ($page_type == "all" || $page_type == "delete")
+            {
                 $admin_id = $this->get_logged_in_admin()->id;
                 $is_super_admin = $this->is_super_admin();
                 $movies = $this->load_model("MovieModel")->get_all($admin_id, $is_super_admin);
@@ -442,10 +464,13 @@ class AdminController extends Controller
                 require_once ADMIN_VIEW . 'movies/all.php';
                 require_once ADMIN_VIEW . "footer.php";
             }
-        } else {
+        }
+        else
+        {
             $this->goto_admin_login();
         }
     }
+
 
     public function delete_thumbnail($thumbnail_id)
     {

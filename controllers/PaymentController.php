@@ -10,10 +10,12 @@ class PaymentController extends Controller
         parent::__construct();
     }
 
-    public function payment_successfull($order_id, $type, $token)
+    public function payment_successfull($token)
     {
         Security::csrf_token();
         $paymentId = $_POST["payment_id"];
+        $order_id  = $_POST["order_id"];
+        $type      = $_POST["type"];
         $order_detail = $this->load_model("OrderModel")->get_detail($order_id);
 
         if ($this->user == null) {
@@ -174,7 +176,7 @@ class PaymentController extends Controller
 
         $created_date = $order_detail["order"]->created_at;
         $createdDate = strtotime($created_date);
-        $infivem = $createdDate + (60 * 1);
+        $infivem = $createdDate + (60 * 5);
         $formatDate = date("Y-m-d H:i:s", $infivem);
 
         if ($is_payment) {
@@ -224,16 +226,52 @@ class PaymentController extends Controller
         }
     }
 
+    public function history()
+    {
+        if ($this->user == null) {
+            header("Location: " . URL);
+            exit();
+        }
+
+        $orders = $this->load_model("OrderModel")->get_by_user($this->user->id);
+
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        foreach ($orders as $order) {
+            $created_date = $order["order"]->created_at;
+            $formatDate = new DateTime($created_date);
+            $formatDate->add(new DateInterval('P0DT0H5M0S'));
+            $formatDate->format('Y-m-d H:i:s');
+            $nowDate = new DateTime();
+            $nowDate->format('Y-m-d H:i:s');
+
+
+            if ($formatDate < $nowDate  && $order['payment']->status == "Pending") {
+                $this->load_model("PaymentModel")->delete($order['payment']->id);
+                foreach ($order["tickets"] as $ticket) {
+                    $this->load_model("TicketModel")->delete_ticket($ticket['ticket']->id);
+                }
+                $this->load_model("OrderModel")->delete($order['order']->id);
+            }
+        }
+
+
+        require_once VIEW . "layout/header.php";
+        require_once VIEW . 'payments/history.php';
+        require_once VIEW . "layout/footer.php";
+    }
+
     public function expired()
     {
         $order_id = $_POST["order_id"];
         $order_detail = $this->load_model("OrderModel")->get_detail($order_id);
-        $this->load_model("PaymentModel")->delete($order_detail['payment']->id);
-        foreach ($order_detail["tickets"] as $ticket) {
-            $this->load_model("TicketModel")->delete_ticket($ticket['ticket']->id);
+        if ($order_detail['payment']->status == "Pending") {
+            $this->load_model("PaymentModel")->delete($order_detail['payment']->id);
+            foreach ($order_detail["tickets"] as $ticket) {
+                $this->load_model("TicketModel")->delete_ticket($ticket['ticket']->id);
+            }
+            $this->load_model("OrderModel")->delete($order_detail['order']->id);
+            $_SESSION["error"] = "You did not pay your ticket in 5 minutes. Please try again later!";
         }
-        $this->load_model("OrderModel")->delete_ticket($order_detail['order']->id);
-        $_SESSION["error"] = "You did not pay your ticket in 5 minutes. Please try again later!";
     }
 
     public function confirm_order($payment_id, $token)

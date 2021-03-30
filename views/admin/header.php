@@ -119,6 +119,7 @@ $admin = $this->get_logged_in_admin();
             <li class="nav-item nav-category"><span class="nav-link">Movies</span></li>
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/category/"> Categories </a></li>
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/cinema/"> Cinemas </a></li>
+            <!-- <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/room/"> Rooms </a></li> -->
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/movie/add/"> Add Movie </a></li>
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/movie/all/"> All Movies </a></li>
 
