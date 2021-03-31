@@ -97,7 +97,7 @@
                                 <li><a class="<?= empty($_SERVER['QUERY_STRING']) ? 'active' : ''; ?>" href="<?= URL; ?>">Home</a></li>
                                 <li><a class="<?= stripos($_SERVER['QUERY_STRING'], 'movie/all') || stripos($_SERVER['QUERY_STRING'], 'movie/detail') ? 'active' : ''; ?>" href="<?= URL; ?>movie/all">Movies</a></li>
                                 <li><a class="<?= stripos($_SERVER['QUERY_STRING'], 'celebrity') ? 'active' : ''; ?>" href="<?= URL . 'celebrity'; ?>">Cast</a></li>
-                                <li><a class="<?= stripos($_SERVER['QUERY_STRING'], 'payment/history') ? 'active' : ''; ?>" href="<?= URL . 'payment/history'; ?>">History</a></li>
+                                <li><a class="<?= stripos($_SERVER['QUERY_STRING'], 'payment/history/1') ? 'active' : ''; ?>" href="<?= URL . 'payment/history/1'; ?>">History</a></li>
                                 <?php if (stripos($_SERVER["REQUEST_URI"], "movie/detail")): ?>
                                     <li><a class="theme-btn show-tickets" href="#"><i class="icofont icofont-ticket"></i> Tickets</a></li>
                                 <?php endif; ?>
