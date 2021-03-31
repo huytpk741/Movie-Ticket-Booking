@@ -114,7 +114,7 @@ CREATE TABLE `cinemas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,7 +123,7 @@ CREATE TABLE `cinemas` (
 
 LOCK TABLES `cinemas` WRITE;
 /*!40000 ALTER TABLE `cinemas` DISABLE KEYS */;
-INSERT INTO `cinemas` VALUES (2,'iMax'),(3,'Cantt');
+INSERT INTO `cinemas` VALUES (2,'iMax'),(3,'CGV'),(4,'Galaxy'),(5,'Lotte');
 /*!40000 ALTER TABLE `cinemas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -206,7 +206,7 @@ CREATE TABLE `movie_cast` (
   KEY `movie_cast_movie_id` (`movie_id`),
   CONSTRAINT `movie_cast_cast_id` FOREIGN KEY (`cast_id`) REFERENCES `celebrities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `movie_cast_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=287 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,7 +215,7 @@ CREATE TABLE `movie_cast` (
 
 LOCK TABLES `movie_cast` WRITE;
 /*!40000 ALTER TABLE `movie_cast` DISABLE KEYS */;
-INSERT INTO `movie_cast` VALUES (98,12,8),(99,12,9),(100,12,10);
+INSERT INTO `movie_cast` VALUES (281,12,10),(282,12,9),(283,12,8),(286,14,13);
 /*!40000 ALTER TABLE `movie_cast` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -235,7 +235,7 @@ CREATE TABLE `movie_categories` (
   KEY `fk_movie_categories_movie_id` (`movie_id`),
   CONSTRAINT `fk_movie_categories_category_id` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_movie_categories_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,7 +244,7 @@ CREATE TABLE `movie_categories` (
 
 LOCK TABLES `movie_categories` WRITE;
 /*!40000 ALTER TABLE `movie_categories` DISABLE KEYS */;
-INSERT INTO `movie_categories` VALUES (78,12,6);
+INSERT INTO `movie_categories` VALUES (165,12,6),(168,14,6),(169,13,7);
 /*!40000 ALTER TABLE `movie_categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -259,13 +259,15 @@ CREATE TABLE `movie_cinemas` (
   `id` int NOT NULL AUTO_INCREMENT,
   `movie_id` int NOT NULL,
   `cinema_id` int NOT NULL,
+  `room_id` int NOT NULL,
   `movie_time` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_movie_cinemas_cinema_id` (`cinema_id`),
-  KEY `fk_movie_cinemas_movie_id` (`movie_id`),
+  KEY `fk_movie_cinemas_cinema_id` (`cinema_id`) /*!80000 INVISIBLE */,
+  KEY `fk_movie_cinemas_movie_id` (`movie_id`) /*!80000 INVISIBLE */,
+  KEY `fk_movie_cinemas_room_id` (`room_id`) /*!80000 INVISIBLE */,
   CONSTRAINT `fk_movie_cinemas_cinema_id` FOREIGN KEY (`cinema_id`) REFERENCES `cinemas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_movie_cinemas_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=312 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +276,7 @@ CREATE TABLE `movie_cinemas` (
 
 LOCK TABLES `movie_cinemas` WRITE;
 /*!40000 ALTER TABLE `movie_cinemas` DISABLE KEYS */;
-INSERT INTO `movie_cinemas` VALUES (102,12,3,'2021-03-31 07:11:00'),(103,12,3,'2021-03-27 15:52:00');
+INSERT INTO `movie_cinemas` VALUES (102,12,3,0,'2021-04-03 21:58:00'),(104,13,3,0,'2021-04-03 00:25:00'),(105,13,2,0,'2021-06-28 15:15:00'),(304,14,3,0,'2021-04-03 21:51:00'),(305,14,3,0,'2021-04-03 21:51:00'),(306,14,3,0,'2021-04-03 21:51:00'),(307,14,3,0,'2021-04-03 21:51:00');
 /*!40000 ALTER TABLE `movie_cinemas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,7 +297,7 @@ CREATE TABLE `movie_ratings` (
   KEY `movie_ratings_user_id` (`user_id`),
   CONSTRAINT `movie_ratings_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `movie_ratings_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -304,6 +306,7 @@ CREATE TABLE `movie_ratings` (
 
 LOCK TABLES `movie_ratings` WRITE;
 /*!40000 ALTER TABLE `movie_ratings` DISABLE KEYS */;
+INSERT INTO `movie_ratings` VALUES (1,14,13,3);
 /*!40000 ALTER TABLE `movie_ratings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,7 +324,7 @@ CREATE TABLE `movie_thumbnails` (
   PRIMARY KEY (`id`),
   KEY `fk_movie_thumbnails_movie_id` (`movie_id`),
   CONSTRAINT `fk_movie_thumbnails_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -330,7 +333,7 @@ CREATE TABLE `movie_thumbnails` (
 
 LOCK TABLES `movie_thumbnails` WRITE;
 /*!40000 ALTER TABLE `movie_thumbnails` DISABLE KEYS */;
-INSERT INTO `movie_thumbnails` VALUES (26,12,'uploads/movie_thumbnails/1616464613-IMG_0505.JPG');
+INSERT INTO `movie_thumbnails` VALUES (26,12,'uploads/movie_thumbnails/1616464613-IMG_0505.JPG'),(27,13,'uploads/movie_thumbnails/1616919227-John_Wick_TeaserPoster.jpg'),(28,14,'uploads/movie_thumbnails/1616919372-John_Wick_TeaserPoster.jpg');
 /*!40000 ALTER TABLE `movie_thumbnails` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,7 +358,7 @@ CREATE TABLE `movies` (
   PRIMARY KEY (`id`),
   KEY `movies_ibfk_1` (`created_by`),
   CONSTRAINT `movies_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `admins` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -364,7 +367,7 @@ CREATE TABLE `movies` (
 
 LOCK TABLES `movies` WRITE;
 /*!40000 ALTER TABLE `movies` DISABLE KEYS */;
-INSERT INTO `movies` VALUES (12,'test','asd','asd','zxc','1h35m','2021-03-31 00:00:00','english',10,3);
+INSERT INTO `movies` VALUES (12,'test','asd','asd','zxc','1h35m','2021-03-31 00:00:00','english',10,3),(13,'Test movie1','asdasda','Writer','Director','1h20','2021-04-28 00:00:00','Eng',5,1),(14,'Test movie','fdgvdvd','Writer','Director','1h20','2021-03-28 00:00:00','Eng',5,1);
 /*!40000 ALTER TABLE `movies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -387,7 +390,7 @@ CREATE TABLE `orders` (
   KEY `movie_id` (`movie_id`),
   CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -396,7 +399,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (96,13,12,0,'2021-03-28 00:20:34',NULL),(97,13,12,0,'2021-03-28 00:33:14',NULL),(98,13,12,0,'2021-03-28 00:33:38',NULL),(99,13,12,7,'2021-03-28 00:37:24',NULL),(100,13,12,7,'2021-03-28 00:39:42',NULL),(101,13,12,0,'2021-03-28 00:40:13',NULL),(102,13,12,0,'2021-03-28 00:43:12',NULL),(103,13,12,0,'2021-03-28 00:45:54',NULL),(104,13,12,0,'2021-03-28 00:48:22',NULL),(105,13,12,7,'2021-03-28 01:00:59',NULL),(106,13,12,7,'2021-03-28 01:05:31',NULL),(107,13,12,7,'2021-03-28 01:06:33',NULL),(108,13,12,7,'2021-03-28 01:07:27',NULL),(109,13,12,0,'2021-03-28 01:13:45',NULL);
+INSERT INTO `orders` VALUES (150,13,14,0,'2021-03-30 23:49:47',NULL),(151,13,12,0,'2021-03-30 23:51:13',NULL),(157,13,14,0,'2021-03-31 01:04:55',NULL),(158,13,14,0,'2021-03-31 01:05:52',NULL);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -415,7 +418,7 @@ CREATE TABLE `payments` (
   `is_confirm` text,
   `payment_id` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,8 +427,32 @@ CREATE TABLE `payments` (
 
 LOCK TABLES `payments` WRITE;
 /*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-INSERT INTO `payments` VALUES (55,96,'Online Payment','Pending','e67a7d5493b3c4e8644a5a880a8a03ef',NULL),(56,97,'Online Payment','Pending','2aa8af9b5e1ad88007f1c4b31be4dc4c',NULL),(57,98,'Cash in Hand','Confirmed',NULL,NULL),(58,99,'Online Payment (Stripe)','Paid',NULL,NULL),(59,100,'Online Payment (Stripe)','Paid',NULL,NULL),(60,101,'Online Payment (Paypal)','Paid',NULL,NULL),(61,102,'Online Payment','Pending','7ecbf89aface068185fa476d700646bd',NULL),(62,103,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgEMAUBnKCtMsZdxEqE6zW'),(63,104,'Online Payment (Paypal)','Paid',NULL,'PAYID-MBPW75Y10K52301VH203744R'),(64,105,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgUUAUBnKCtMsZKSJytpiK'),(65,106,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgVyAUBnKCtMsZi8HZiQYD'),(66,107,'Online Payment (Paypal)','Paid',NULL,'PAYID-MBPXIOQ71L966764T057400U'),(67,108,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgXrAUBnKCtMsZeLAKk08L'),(68,109,'Cash in Hand','Pending','ca80f755da51e6dd255d318f28fa97a2',NULL);
+INSERT INTO `payments` VALUES (57,98,'Cash in Hand','Confirmed',NULL,NULL),(58,99,'Online Payment (Stripe)','Paid',NULL,NULL),(59,100,'Online Payment (Stripe)','Paid',NULL,NULL),(60,101,'Online Payment (Paypal)','Paid',NULL,NULL),(62,103,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgEMAUBnKCtMsZdxEqE6zW'),(63,104,'Online Payment (Paypal)','Paid',NULL,'PAYID-MBPW75Y10K52301VH203744R'),(64,105,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgUUAUBnKCtMsZKSJytpiK'),(65,106,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgVyAUBnKCtMsZi8HZiQYD'),(66,107,'Online Payment (Paypal)','Paid',NULL,'PAYID-MBPXIOQ71L966764T057400U'),(67,108,'Online Payment (Stripe)','Paid',NULL,'pi_1IZgXrAUBnKCtMsZeLAKk08L'),(106,147,'Online Payment (Paypal)','Paid',NULL,'PAYID-MBRHRGY3H198195W4145915Y'),(107,148,'Online Payment','Pending','e98441be71c1d0c5094a7781b4e105f8',NULL),(108,149,'Online Payment (Stripe)','Paid',NULL,'pi_1IacCfAUBnKCtMsZYEKd4NT5'),(109,150,'Online Payment (Stripe)','Paid',NULL,'pi_1IaklEAUBnKCtMsZP0U4LE43'),(110,151,'Online Payment (Stripe)','Paid',NULL,'pi_1IakmcAUBnKCtMsZsu6UeMhk'),(116,157,'Cash in Hand','Confirmed',NULL,NULL),(117,158,'Cash in Hand','Confirmed',NULL,NULL);
 /*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rooms`
+--
+
+DROP TABLE IF EXISTS `rooms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rooms` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rooms`
+--
+
+LOCK TABLES `rooms` WRITE;
+/*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
+INSERT INTO `rooms` VALUES (1,'Room 1'),(2,'Room 2'),(3,'Room 3'),(4,'Room 4'),(5,'Room 5'),(6,'Room 6');
+/*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -448,7 +475,7 @@ CREATE TABLE `subscribers` (
 
 LOCK TABLES `subscribers` WRITE;
 /*!40000 ALTER TABLE `subscribers` DISABLE KEYS */;
-INSERT INTO `subscribers` VALUES (1,'adnan1@gmail.com'),(2,'huytpk741@gmail.com');
+INSERT INTO `subscribers` VALUES (1,'adnan1@gmail.com');
 /*!40000 ALTER TABLE `subscribers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -479,7 +506,7 @@ CREATE TABLE `tickets` (
   CONSTRAINT `tickets_ibfk_3` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tickets_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tickets_ibfk_5` FOREIGN KEY (`cinema_id`) REFERENCES `cinemas` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -488,7 +515,7 @@ CREATE TABLE `tickets` (
 
 LOCK TABLES `tickets` WRITE;
 /*!40000 ALTER TABLE `tickets` DISABLE KEYS */;
-INSERT INTO `tickets` VALUES (113,96,12,13,3,'E7','2021-03-31 07:11:00',102),(114,96,12,13,3,'E8','2021-03-31 07:11:00',102),(115,97,12,13,3,'E9','2021-03-31 07:11:00',102),(116,98,12,13,3,'E10','2021-03-31 07:11:00',102),(117,99,12,13,3,'E6','2021-03-31 07:11:00',102),(118,100,12,13,3,'E11','2021-03-31 07:11:00',102),(119,101,12,13,3,'E12','2021-03-31 07:11:00',102),(120,102,12,13,3,'E13','2021-03-31 07:11:00',102),(121,103,12,13,3,'E14','2021-03-31 07:11:00',102),(122,104,12,13,3,'E15','2021-03-31 07:11:00',102),(123,105,12,13,3,'E4','2021-03-31 07:11:00',102),(124,105,12,13,3,'E5','2021-03-31 07:11:00',102),(125,106,12,13,3,'E3','2021-03-31 07:11:00',102),(126,107,12,13,3,'E2','2021-03-31 07:11:00',102),(127,108,12,13,3,'D1','2021-03-31 07:11:00',102),(128,108,12,13,3,'D2','2021-03-31 07:11:00',102),(129,108,12,13,3,'D3','2021-03-31 07:11:00',102),(130,108,12,13,3,'D4','2021-03-31 07:11:00',102),(131,108,12,13,3,'D5','2021-03-31 07:11:00',102),(132,108,12,13,3,'E1','2021-03-31 07:11:00',102),(133,109,12,13,3,'D6','2021-03-31 07:11:00',102);
+INSERT INTO `tickets` VALUES (186,150,14,13,3,'E9','2021-04-03 21:51:00',304),(187,150,14,13,3,'E10','2021-04-03 21:51:00',304),(188,151,12,13,3,'E8','2021-04-03 21:58:00',102),(189,151,12,13,3,'E9','2021-04-03 21:58:00',102),(204,157,14,13,3,'E6','2021-04-03 21:51:00',304),(205,157,14,13,3,'E7','2021-04-03 21:51:00',304),(206,157,14,13,3,'E8','2021-04-03 21:51:00',304),(207,158,14,13,3,'E11','2021-04-03 21:51:00',304),(208,158,14,13,3,'E12','2021-04-03 21:51:00',304);
 /*!40000 ALTER TABLE `tickets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -506,7 +533,7 @@ CREATE TABLE `trailers` (
   PRIMARY KEY (`id`),
   KEY `fk_trailers_movie_id` (`movie_id`),
   CONSTRAINT `fk_trailers_movie_id` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -515,7 +542,7 @@ CREATE TABLE `trailers` (
 
 LOCK TABLES `trailers` WRITE;
 /*!40000 ALTER TABLE `trailers` DISABLE KEYS */;
-INSERT INTO `trailers` VALUES (29,12,'uploads/movie_trailers/1616464613-recording.mov');
+INSERT INTO `trailers` VALUES (29,12,'uploads/movie_trailers/1616464613-recording.mov'),(30,13,'uploads/movie_trailers/1616919227-2020-11-04-2121-55.mp4'),(31,14,'uploads/movie_trailers/1616919372-2020-11-04-2121-55.mp4');
 /*!40000 ALTER TABLE `trailers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -545,7 +572,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (7,'Adnan Afzal','adnan@gmail.com','$2y$10$HUi/noe1BHjR967b3t08junj5Kl0ZJ6VisGUYhtMAOyKc//GJvinC','1233','183898','2020-08-27 00:48:47','d882a17502cdc2bdf4848e6a553d18e4'),(8,'Ali','ali@gmail.com','$2y$10$fs2vVOunF7VEddTqvzH5JOPCbe/gTo9RyhgY53iN4kL27FGxy13PC','123456','952753','2020-08-29 11:03:19',NULL),(9,'Ahmad','ahmad@gmail.com','$2y$10$yeVfM3yz.jSQYIe3gO20ZeY2nt6cLxKTl4EWS9KyFStOg5waNe2DS','123456','316037','2020-08-29 11:03:51',NULL),(10,'Yasir','yasir@gmail.com','$2y$10$7gWks2rF/99/Esc1YqbLDOI1kzPQN71A31UAnU4j3.tfKS4DcsZAW','123456','302568','2020-08-29 11:05:19',NULL),(11,'Jinnah','jinnah@gmail.com','$2y$10$uolwHENemBrUhkIPogymT.ZaziF5klBPe7FWwF9O0d3c8hdNaDZoG','1234567','250193','2020-08-29 11:05:17',NULL),(12,'Adnan','adnanafzal565@gmail.com','$2y$10$xe2gqMvJG2WSqQToeOZPueSTi7OYV.d0HD8lb1JuD/1xHuy.vRCcC','12345','206111',NULL,NULL),(13,'Tran Quoc Huy','huytpk741@gmail.com','$2y$10$WtRfvqDxdbYK3XgEWeX.1.biqGQ9ilqoUvHMY7RKZriGyAWYjGzYW','5333335','239053','2021-03-25 11:27:42','829f82a55afaaceadd4fd519260f88b7');
+INSERT INTO `users` VALUES (7,'Adnan Afzal','adnan@gmail.com','$2y$10$HUi/noe1BHjR967b3t08junj5Kl0ZJ6VisGUYhtMAOyKc//GJvinC','1233','183898','2020-08-27 00:48:47','d882a17502cdc2bdf4848e6a553d18e4'),(8,'Ali','ali@gmail.com','$2y$10$fs2vVOunF7VEddTqvzH5JOPCbe/gTo9RyhgY53iN4kL27FGxy13PC','123456','952753','2020-08-29 11:03:19',NULL),(9,'Ahmad','ahmad@gmail.com','$2y$10$yeVfM3yz.jSQYIe3gO20ZeY2nt6cLxKTl4EWS9KyFStOg5waNe2DS','123456','316037','2020-08-29 11:03:51',NULL),(10,'Yasir','yasir@gmail.com','$2y$10$7gWks2rF/99/Esc1YqbLDOI1kzPQN71A31UAnU4j3.tfKS4DcsZAW','123456','302568','2020-08-29 11:05:19',NULL),(11,'Jinnah','jinnah@gmail.com','$2y$10$uolwHENemBrUhkIPogymT.ZaziF5klBPe7FWwF9O0d3c8hdNaDZoG','1234567','250193','2020-08-29 11:05:17',NULL),(12,'Adnan','adnanafzal565@gmail.com','$2y$10$xe2gqMvJG2WSqQToeOZPueSTi7OYV.d0HD8lb1JuD/1xHuy.vRCcC','12345','206111',NULL,NULL),(13,'Tran Quoc Huy','huytpk741@gmail.com','$2y$10$mcIPXjGl06UIE911BUHTj./PPYN.qbveWrLFxK3rBv8o1UC2RD97O','5333335','239053','2021-03-25 11:27:42','829f82a55afaaceadd4fd519260f88b7');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -558,4 +585,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-28 10:47:49
+-- Dump completed on 2021-03-31 22:50:30
