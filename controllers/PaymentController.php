@@ -226,14 +226,25 @@ class PaymentController extends Controller
         }
     }
 
-    public function history()
+    public function history($page)
     {
         if ($this->user == null) {
             header("Location: " . URL);
             exit();
         }
 
-        $orders = $this->load_model("OrderModel")->get_by_user($this->user->id);
+        $per_page = 3;
+
+        if ($page == "" || $page == 1) {
+            $page_1 = 0;
+        } else {
+            $page_1 = ($page * $per_page) - $per_page;
+        }
+
+        $count = $this->load_model("OrderModel")->count_by_user($this->user->id);
+        $count_order = ceil($count / $per_page);
+
+        $orders = $this->load_model("OrderModel")->get_by_user($this->user->id, $page_1, $per_page);
 
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         foreach ($orders as $order) {

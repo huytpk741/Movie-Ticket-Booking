@@ -117,9 +117,9 @@ class OrderModel extends Model
         return mysqli_fetch_object($result);
     }
 
-    public function get_by_user($user_id)
+    public function get_by_user($user_id, $page, $per_page)
     {
-        $sql = "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id DESC";
+        $sql = "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id DESC LIMIT $page, $per_page";
         $result = mysqli_query($this->connection, $sql);
 
         if (mysqli_num_rows($result) == 0) {
@@ -132,6 +132,14 @@ class OrderModel extends Model
             array_push($data, $detail);
         }
         return $data;
+    }
+
+    public function count_by_user($user_id)
+    {
+        $sql = "SELECT * FROM orders WHERE user_id = $user_id ORDER BY id DESC";
+        $result = mysqli_query($this->connection, $sql);
+
+        return mysqli_num_rows($result);
     }
 
     public function delete($id)

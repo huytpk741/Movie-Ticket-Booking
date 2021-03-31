@@ -27,8 +27,20 @@
 <!-- transformers area start -->
 <section class="transformers-area">
     <div class="container">
-        <?php if ($orders != null) {
-            foreach ($orders as $order) : ?>
+        <?php if ($orders != null) { ?>
+            <div class="clearfix">
+                <ul class="pagination">
+                    <?php for ($i = 1; $i <= $count_order; $i++) {
+                        if ($i == $page) { ?>
+                            <li  class='active'><a class='active_link' href='<?= URL; ?>payment/history/<?= $i ?>'><?= $i ?></a></li>
+                        <?php } else { ?>
+                            <li><a href='<?= URL; ?>payment/history/<?= $i ?>'><?= $i ?></a></li>
+                    <?php }
+                    } ?>
+                </ul>
+            </div>
+            <?php foreach ($orders as $order) : ?>
+
                 <div class="transformers-box" style="margin: 30px 0px;">
                     <div class="row flexbox-center">
                         <div class="col-lg-4 text-lg-left text-center">
@@ -115,12 +127,23 @@
                             </div>
                         </div>
                     </div>
-                    <?php if($order["payment"]->type == "Online Payment" && $order["payment"]->status == "Pending") {?>
+                    <?php if ($order["payment"]->type == "Online Payment" && $order["payment"]->status == "Pending") { ?>
                         <a href="<?= URL; ?>payment/order/<?= $order["order"]->id ?>" class="theme-btn"><i class="icofont icofont-ticket"></i> Pay</a>
                     <?php } ?>
                 </div>
-            <?php endforeach;
-        } else { ?>
+            <?php endforeach; ?>
+            <div class="clearfix">
+                <ul class="pagination">
+                    <?php for ($i = 1; $i <= $count_order; $i++) {
+                        if ($i == $page) { ?>
+                            <li class='active'><a class='active_link' href='<?= URL; ?>payment/history/<?= $i ?>'><?= $i ?></a></li>
+                        <?php } else { ?>
+                            <li><a href='<?= URL; ?>payment/history/<?= $i ?>'><?= $i ?></a></li>
+                    <?php }
+                    } ?>
+                </ul>
+            </div>
+        <?php } else { ?>
             <div class="transformers-box">
                 <p style="font-size: 50px; margin: 100px 0px; text-align:center;">No order found!</p>
             </div>
@@ -289,5 +312,6 @@
         }
     </script>
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
 
 </section><!-- transformers area end -->
