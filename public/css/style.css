@@ -1198,6 +1198,7 @@ hr {
 	color: #fff;
 	text-align: center;
     margin-top: 5px;
+    padding: 10px;
 }
 
 .login-box form .theme-btn + span {
