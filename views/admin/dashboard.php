@@ -71,7 +71,7 @@
                             <div class="d-sm-flex align-items-baseline report-summary-header">
                                 <h5 class="font-weight-semibold">Tickets sold so far</h5>
                                 <span class="ml-auto">Updated Report</span>
-                                <button class="btn btn-icons border-0 p-2"><i class="icon-refresh"></i></button>
+                                <button class="btn btn-icons border-0 p-2"><i class="icofont icofont-refresh"></i></button>
                             </div>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                             <div class="d-sm-flex align-items-baseline report-summary-header">
                                 <h5 class="font-weight-semibold">Movies with ratings</h5>
                                 <span class="ml-auto">Updated Report</span>
-                                <button class="btn btn-icons border-0 p-2"><i class="icon-refresh"></i></button>
+                                <button class="btn btn-icons border-0 p-2"><i class="icofont icofont-refresh"></i></button>
                             </div>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
 
             ticketsSold: function () {
                 $.ajax({
-                    url: BASE_URL + "ajax/get_charts_data_tickets_sold",
+                    url: "<?= URL; ?>ajax/get_charts_data_tickets_sold",
                     method: "POST",
                     success: function (response) {
                         console.log(response);
@@ -173,7 +173,7 @@
 
             movieRatings: function () {
                 $.ajax({
-                    url: BASE_URL + "ajax/get_charts_data_movies_ratings",
+                    url: "<?= URL; ?>ajax/get_charts_data_movies_ratings",
                     method: "POST",
                     success: function (response) {
                         console.log(response);

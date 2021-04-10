@@ -21,6 +21,7 @@ $admin = $this->get_logged_in_admin();
     <link rel="stylesheet" href="<?= CSS; ?>font-awesome.css">
     <link rel="stylesheet" href="<?= ADMIN_VENDOR; ?>chartist.min.css">
     <link rel="stylesheet" href="<?= CSS; ?>sweetalert.css">
+    <link rel="stylesheet" type="text/css" href="<?= CSS; ?>icofont.css" media="all" />
     <link rel="stylesheet" href="<?= PUBLIC_PATH; ?>datetimepicker/jquery.datetimepicker.min.css">
     <link rel="stylesheet" href="<?= PUBLIC_PATH; ?>datatable/datatables.css" />
 

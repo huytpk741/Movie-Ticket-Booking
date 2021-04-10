@@ -133,24 +133,28 @@ class MovieModel extends Model
         $trailers = $_FILES["trailers"];
 
         // Save movie thumbnails
-        for ($a = 0; $a < count($thumbnail["name"]); $a++) {
+        for ($a = 0; $a < count($thumbnail["name"]); $a++)
+        {
             $file_path = "uploads/movie_thumbnails/" . time() . "-" . $thumbnail["name"][$a];
             $is_saved = move_uploaded_file($thumbnail["tmp_name"][$a], $file_path);
 
-            if ($is_saved) {
+            if ($is_saved)
+            {
                 $sql = "INSERT INTO `movie_thumbnails`(`movie_id`, `file_path`) VALUES ('" . $movie_id . "','" . $file_path . "')";
                 mysqli_query($this->connection, $sql);
             }
         }
 
         // Save movie trailers
-        for ($a = 0; $a < count($trailers["name"]); $a++) {
+        for ($a = 0; $a < count($trailers["name"]); $a++)
+        {
             $trailers["name"][$a] = $this->secure_input($trailers["name"][$a]);
-
+            
             $file_path = "uploads/movie_trailers/" . time() . "-" . $trailers["name"][$a];
             $is_saved = move_uploaded_file($trailers["tmp_name"][$a], $file_path);
 
-            if ($is_saved) {
+            if ($is_saved)
+            {
                 $sql = "INSERT INTO `trailers`(`movie_id`, `file_path`) VALUES ('" . $movie_id . "','" . $file_path . "')";
                 mysqli_query($this->connection, $sql) or die(mysqli_error($this->connection));
             }
@@ -165,69 +169,40 @@ class MovieModel extends Model
         mysqli_query($this->connection, $sql);
 
         // Save new categories
-        for ($a = 0; $a < count($categories); $a++) {
+        for ($a = 0; $a < count($categories); $a++)
+        {
             $sql = "INSERT INTO `movie_categories`(`movie_id`, `category_id`) VALUES ('" . $movie_id . "','" . $categories[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
 
-        $updated_cinemas = [];
-        $un_updated_cinemas = [];
+        // delete previous cinemas
+        $sql = "DELETE FROM `movie_cinemas` WHERE `movie_id` = '" . $movie_id . "'";
+        mysqli_query($this->connection, $sql);
+        
+        // Save new cinemas
         for ($a = 0; $a < count($cinemas); $a++)
         {
-            $sql = "SELECT * FROM `movie_cinemas` WHERE movie_id = '" . $movie_id . "' AND cinema_id = '" . $cinemas[$a] . "'";
-            $result = mysqli_query($this->connection, $sql);
-
-            $sql = "UPDATE `movie_cinemas` SET cinema_id = '" . $cinemas[$a] . "', movie_time = '" . $cinema_time[$a] . "' WHERE movie_id = '" . $movie_id . "' AND cinema_id = '" . $cinemas[$a] . "'";
-            mysqli_query($this->connection, $sql);
-
-            if (mysqli_num_rows($result) > 0)
-            {
-                array_push($updated_cinemas, $cinemas[$a]);
-            }
-            else
-            {
-                array_push($un_updated_cinemas, [
-                    "cinema" => $cinemas[$a],
-                    "cinema_time" => $cinema_time[$a]
-                ]);
-            }
-        }
-
-        // if admin has deleted cinemas from movie
-        $sql = "SELECT * FROM `movie_cinemas` WHERE movie_id = '" . $movie_id . "'";
-        $result = mysqli_query($this->connection, $sql);
-        $previous_cinemas = mysqli_num_rows($result);
-
-        if ($previous_cinemas > count($cinemas))
-        {
-            $sql = "DELETE FROM `movie_cinemas` WHERE movie_id = '" . $movie_id . "' AND cinema_id NOT IN (" . implode(',', $updated_cinemas) . ")";
-            mysqli_query($this->connection, $sql);
-        }
-
-        for ($a = 0; $a < count($un_updated_cinemas); $a++)
-        {
-            $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $un_updated_cinemas[$a]["cinema"] . "', '" . $un_updated_cinemas[$a]["cinema_time"] . "')";
+            $sql = "INSERT INTO `movie_cinemas`(`movie_id`, `cinema_id`, `movie_time`) VALUES ('" . $movie_id . "','" . $cinemas[$a] . "', '" . $cinema_time[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
 
         // delete previous casts
         $sql = "DELETE FROM `movie_cast` WHERE `movie_id` = '" . $movie_id . "'";
         mysqli_query($this->connection, $sql);
-
+        
         // Save new casts
-        for ($a = 0; $a < count($casts); $a++) {
+        for ($a = 0; $a < count($casts); $a++)
+        {
             $sql = "INSERT INTO `movie_cast`(`movie_id`, `cast_id`) VALUES ('" . $movie_id . "','" . $casts[$a] . "')";
             mysqli_query($this->connection, $sql);
         }
-
-        $sql = "DELETE FROM `orders` WHERE `movie_id` = '" . $movie_id . "'";
-        mysqli_query($this->connection, $sql);
 
         return array(
             "status" => "success",
             "message" => "Movie has been updated"
         );
     }
+
 
     public function get_all($admin_id, $is_super_admin)
     {
