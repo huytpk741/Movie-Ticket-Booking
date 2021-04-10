@@ -471,7 +471,6 @@ class AdminController extends Controller
         }
     }
 
-
     public function delete_thumbnail($thumbnail_id)
     {
         $this->load_model("MovieModel")->delete_thumbnail($thumbnail_id);
