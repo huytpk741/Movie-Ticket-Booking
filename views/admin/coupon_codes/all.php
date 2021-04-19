@@ -16,7 +16,7 @@
     <?php if (!empty($message)) { ?>
         <div class="alert alert-success"><?= $message; ?></div>
     <?php } ?>
-
+    <a style="margin-bottom: 30px; margin-left: 30px;" class="btn btn-success btn-md" href="<?= URL; ?>admin/coupon_codes/add/">Add</a>
     <div class="row">
       
       <div class="col-lg-12 grid-margin stretch-card">

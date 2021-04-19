@@ -255,7 +255,6 @@ class PaymentController extends Controller
             $nowDate = new DateTime();
             $nowDate->format('Y-m-d H:i:s');
 
-
             if ($formatDate < $nowDate  && $order['payment']->status == "Pending") {
                 $this->load_model("PaymentModel")->delete($order['payment']->id);
                 foreach ($order["tickets"] as $ticket) {

@@ -33,7 +33,7 @@ class MovieController extends Controller
         $is_currently_playing = $MovieModel->is_currently_playing($movie_id);
         $ratings = $this->load_model("RatingsModel")->get_movie_ratings($movie_id);
 
-        
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
         foreach ($movie->orders as $order) {
             $order_detail = $this->load_model("OrderModel")->get_detail($order->id);
 
