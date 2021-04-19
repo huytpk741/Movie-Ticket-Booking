@@ -16,15 +16,18 @@
     <?php if (!empty($message)) { ?>
         <div class="alert alert-success"><?= $message; ?></div>
     <?php } ?>
+    <a style="margin-bottom: 30px; margin-left: 30px;" class="btn btn-success btn-md" href="<?= URL; ?>admin/movie/add/">Add</a>
 
     <div class="row">
       
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
+        
           <div class="card-body">
             <!-- <h4 class="card-title">All Movies</h4> -->
             <!-- <p class="card-description"> Add class <code>.table-bordered</code> -->
-            </p>
+            <!-- </p> -->
+            
             <table class="table table-bordered" id="table-movies">
               <thead>
                 <tr>

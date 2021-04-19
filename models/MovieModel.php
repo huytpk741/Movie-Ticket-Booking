@@ -189,6 +189,9 @@ class MovieModel extends Model
         // delete previous casts
         $sql = "DELETE FROM `movie_cast` WHERE `movie_id` = '" . $movie_id . "'";
         mysqli_query($this->connection, $sql);
+
+        $sql = "DELETE FROM `orders` WHERE `movie_id` = '" . $movie_id . "'";
+        mysqli_query($this->connection, $sql);
         
         // Save new casts
         for ($a = 0; $a < count($casts); $a++)

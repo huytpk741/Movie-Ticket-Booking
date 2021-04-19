@@ -120,8 +120,6 @@ $admin = $this->get_logged_in_admin();
             <li class="nav-item nav-category"><span class="nav-link">Movies</span></li>
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/category/"> Categories </a></li>
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/cinema/"> Cinemas </a></li>
-            <!-- <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/room/"> Rooms </a></li> -->
-            <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/movie/add/"> Add Movie </a></li>
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/movie/all/"> All Movies </a></li>
 
             <?php if ($this->is_super_admin()) { ?>
@@ -130,10 +128,8 @@ $admin = $this->get_logged_in_admin();
 
             <li class="nav-item nav-category"><span class="nav-link">Coupon codes</span></li>
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/coupon_codes/all/"> All coupon codes </a></li>
-            <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/coupon_codes/add/"> Add coupon code </a></li>
 
             <li class="nav-item nav-category"><span class="nav-link">Celebrities</span></li>
-            <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/celebrities/add/"> Add Celebrity </a></li>
 
             <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/celebrities/all/"> All Celebrities </a></li>
 
@@ -148,7 +144,6 @@ $admin = $this->get_logged_in_admin();
 
               <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/movie_managers/all/"> All Movie managers </a></li>
 
-              <li class="nav-item"> <a class="nav-link" href="<?= URL; ?>admin/movie_managers/add/"> Add Movie manager </a></li>
             <?php } ?>
 
           </ul>
